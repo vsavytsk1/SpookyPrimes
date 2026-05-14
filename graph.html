@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SpookyPrimes - Research Graph</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/cytoscape/3.23.0/cytoscape.min.js"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #0a0e27;
+            color: #e0e0e0;
+        }
+        #header {
+            padding: 20px;
+            background: linear-gradient(135deg, #1a1f3a 0%, #16213e 100%);
+            border-bottom: 2px solid #00d4ff;
+            box-shadow: 0 2px 10px rgba(0, 212, 255, 0.2);
+        }
+        h1 { font-size: 28px; margin-bottom: 5px; color: #00d4ff; }
+        .subtitle { font-size: 14px; color: #888; }
+        #cy {
+            width: 100%;
+            height: calc(100vh - 120px);
+            background: #0a0e27;
+        }
+        #controls {
+            padding: 15px 20px;
+            background: #1a1f3a;
+            border-top: 1px solid #333;
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            font-size: 13px;
+        }
+        button {
+            padding: 8px 16px;
+            background: #00d4ff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            color: #000;
+            font-weight: bold;
+            transition: 0.2s;
+        }
+        button:hover { background: #00a8cc; }
+        .info { color: #888; font-size: 12px; }
+    </style>
+</head>
+<body>
+    <div id="header">
+        <h1>🔬 SpookyPrimes Research Graph</h1>
+        <div class="subtitle">Interactive knowledge network • Hover to explore • Drag to pan</div>
+    </div>
+    <div id="cy"></div>
+    <div id="controls">
+        <button onclick="fitGraph()">Fit Graph</button>
+        <button onclick="resetZoom()">Reset View</button>
+        <span class="info">Use mouse wheel to zoom • Click and drag nodes</span>
+    </div>
+
+    <script>
+        let cy;
+
+        async function initGraph() {
+            try {
+                // Load your graph data
+                const response = await fetch('graph.json');
+                const data = await response.json();
+
+                cy = cytoscape({
+                    container: document.getElementById('cy'),
+                    elements: data.elements,
+                    style: [
+                        {
+                            selector: 'node',
+                            style: {
+                                'background-color': '#00d4ff',
+                                'label': 'data(name)',
+                                'text-valign': 'center',
+                                'text-halign': 'center',
+                                'font-size': 10,
+                                'color': '#000',
+                                'width': 30,
+                                'height': 30,
+                                'border-width': 2,
+                                'border-color': '#00a8cc'
+                            }
+                        },
+                        {
+                            selector: 'node:hover',
+                            style: {
+                                'background-color': '#ff006e',
+                                'width': 40,
+                                'height': 40
+                            }
+                        },
+                        {
+                            selector: 'edge',
+                            style: {
+                                'line-color': '#404040',
+                                'width': 1,
+                                'opacity': 0.5,
+                                'curve-style': 'straight'
+                            }
+                        },
+                        {
+                            selector: 'edge:hover',
+                            style: {
+                                'line-color': '#00d4ff',
+                                'width': 2,
+                                'opacity': 1
+                            }
+                        }
+                    ],
+                    layout: {
+                        name: 'cose',
+                        directed: false,
+                        animate: true,
+                        animationDuration: 500,
+                        nodeSpacing: 5,
+                        padding: 30
+                    },
+                    wheelSensitivity: 0.1,
+                    userZoomingEnabled: true,
+                    panningEnabled: true
+                });
+
+                cy.fit();
+            } catch (error) {
+                console.error('Error loading graph:', error);
+                document.getElementById('cy').innerHTML = '<p style="color: red; padding: 20px;">Error loading graph.json. Make sure it\'s in the same directory.</p>';
+            }
+        }
+
+        function fitGraph() {
+            cy.fit(null, 50);
+        }
+
+        function resetZoom() {
+            cy.zoom(1);
+            cy.pan({ x: 0, y: 0 });
+            cy.fit(null, 50);
+        }
+
+        // Initialize on load
+        window.addEventListener('load', initGraph);
+    </script>
+</body>
+</html>

@@ -1,0 +1,830 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>The Dodecahedron of Open Questions</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --bg: #0d1014;
+    --bg-2: #14181f;
+    --ink: #e6e2d8;
+    --ink-dim: #8a8479;
+    --rule: #2a2f38;
+    --atom: #8a7bb5;       /* muted purple */
+    --atom-hi: #b3a3dd;
+    --pent: #c14a3b;       /* muted red */
+    --pent-hi: #e86753;
+    --edge: #3a3f48;
+    --accent: #d4b896;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body {
+    height: 100%;
+    width: 100%;
+    overflow: hidden;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: 'EB Garamond', Georgia, serif;
+    font-feature-settings: "liga", "kern";
+    -webkit-tap-highlight-color: transparent;
+    -webkit-user-select: none;
+    user-select: none;
+    overscroll-behavior: none;
+  }
+  #stage { position: fixed; inset: 0; }
+  canvas {
+    display: block;
+    cursor: grab;
+    touch-action: none;  /* prevent browser from interpreting touch as scroll/zoom */
+  }
+  canvas:active { cursor: grabbing; }
+
+  /* Top-left title block */
+  .title {
+    position: fixed; top: 28px; left: 32px; max-width: 480px;
+    z-index: 10; pointer-events: none;
+    opacity: 0; animation: fadein 1.6s 0.3s forwards;
+  }
+  .title h1 {
+    font-family: 'EB Garamond', serif;
+    font-weight: 500; font-style: italic;
+    font-size: 28px; line-height: 1.15;
+    letter-spacing: 0.01em; color: var(--ink);
+    margin-bottom: 6px;
+  }
+  .title p {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px; line-height: 1.5;
+    color: var(--ink-dim);
+    letter-spacing: 0.02em;
+  }
+
+  /* Bottom hint */
+  .hint {
+    position: fixed; bottom: 24px; left: 50%;
+    transform: translateX(-50%);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px; letter-spacing: 0.08em;
+    color: var(--ink-dim); text-transform: uppercase;
+    z-index: 10; pointer-events: none;
+    opacity: 0; animation: fadein 2s 1.2s forwards;
+  }
+  .hint .key { color: var(--accent); }
+
+  /* Pentagon info panel */
+  .panel {
+    position: fixed; top: 0; right: 0; height: 100vh;
+    width: 460px; max-width: 92vw;
+    background: var(--bg-2);
+    border-left: 1px solid var(--rule);
+    padding: 56px 44px 48px;
+    z-index: 20;
+    transform: translateX(100%);
+    transition: transform 0.6s cubic-bezier(0.22, 0.61, 0.36, 1);
+    overflow-y: auto;
+  }
+  .panel.open { transform: translateX(0); }
+  .panel .close {
+    position: absolute; top: 20px; right: 24px;
+    background: none; border: none; color: var(--ink-dim);
+    font-family: 'JetBrains Mono', monospace; font-size: 18px;
+    cursor: pointer; padding: 6px 10px;
+    transition: color 0.2s;
+  }
+  .panel .close:hover { color: var(--ink); }
+  .panel .tag {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px; letter-spacing: 0.18em;
+    color: var(--pent-hi); text-transform: uppercase;
+    margin-bottom: 14px;
+  }
+  .panel h2 {
+    font-family: 'EB Garamond', serif;
+    font-weight: 500; font-style: italic;
+    font-size: 30px; line-height: 1.15;
+    color: var(--ink); margin-bottom: 8px;
+  }
+  .panel .technical {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px; color: var(--ink-dim);
+    margin-bottom: 28px; letter-spacing: 0.02em;
+  }
+  .panel .body {
+    font-size: 16px; line-height: 1.55;
+    color: var(--ink); margin-bottom: 22px;
+  }
+  .panel .rule {
+    height: 1px; background: var(--rule); margin: 24px 0;
+  }
+  .panel .atoms-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px; letter-spacing: 0.18em;
+    color: var(--ink-dim); text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+  .panel .atoms {
+    font-size: 14px; line-height: 1.55; color: var(--ink);
+  }
+  .panel .atoms li {
+    list-style: none; padding: 6px 0;
+    border-bottom: 1px solid var(--rule);
+    font-style: italic;
+  }
+  .panel .atoms li:last-child { border-bottom: none; }
+  .panel .footer {
+    margin-top: 32px; font-size: 13px; line-height: 1.55;
+    color: var(--ink-dim); font-style: italic;
+  }
+
+  @keyframes fadein {
+    from { opacity: 0; transform: translateY(6px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* Mobile: tighter layout, larger tap targets, dvh for panel */
+  @media (max-width: 720px) {
+    .title { top: 14px; left: 16px; max-width: calc(100vw - 32px); }
+    .title h1 { font-size: 20px; line-height: 1.15; }
+    .title p { font-size: 10px; }
+
+    .hint {
+      bottom: calc(16px + env(safe-area-inset-bottom));
+      font-size: 9px;
+      padding: 6px 10px;
+      background: rgba(13, 16, 20, 0.7);
+      border: 1px solid var(--rule);
+      border-radius: 14px;
+      backdrop-filter: blur(4px);
+      -webkit-backdrop-filter: blur(4px);
+    }
+
+    .panel {
+      width: 100vw;
+      height: 100dvh;
+      padding: 56px 22px calc(28px + env(safe-area-inset-bottom));
+    }
+    .panel h2 { font-size: 22px; }
+    .panel .body { font-size: 15px; }
+    .panel .atoms { font-size: 13px; }
+    .panel .close {
+      top: 12px; right: 12px;
+      width: 44px; height: 44px;
+      font-size: 24px;
+      display: flex; align-items: center; justify-content: center;
+      border-radius: 22px;
+      background: rgba(42, 47, 56, 0.5);
+    }
+    .panel .close:hover, .panel .close:active {
+      background: rgba(42, 47, 56, 0.9);
+      color: var(--ink);
+    }
+  }
+
+  /* Very small phones (iPhone SE etc.) */
+  @media (max-width: 380px) {
+    .title h1 { font-size: 18px; }
+    .panel { padding: 56px 18px calc(24px + env(safe-area-inset-bottom)); }
+    .panel h2 { font-size: 20px; }
+  }
+</style>
+</head>
+<body>
+  <div id="stage"></div>
+
+  <div class="title">
+    <h1>The Dodecahedron of Open Questions</h1>
+    <p>12 pentagons · 20 atoms · 30 edges<br/>each pentagonal face is an unresolved question in modern physics</p>
+  </div>
+
+  <div class="hint" id="hint">
+    <span class="key">click</span> a red pentagon &nbsp;·&nbsp; <span class="key">drag</span> to rotate &nbsp;·&nbsp; <span class="key">scroll</span> to zoom
+  </div>
+
+  <aside class="panel" id="panel" aria-hidden="true">
+    <button class="close" id="closeBtn" aria-label="Close">×</button>
+    <div class="tag" id="pTag">Open question</div>
+    <h2 id="pTitle">—</h2>
+    <div class="technical" id="pTech">—</div>
+    <div class="body" id="pBody">—</div>
+    <div class="rule"></div>
+    <div class="atoms-label">5 structural elements implicated</div>
+    <ul class="atoms" id="pAtoms"></ul>
+    <div class="footer" id="pFooter">—</div>
+  </aside>
+
+<script type="importmap">
+{
+  "imports": {
+    "three": "https://cdnjs.cloudflare.com/ajax/libs/three.js/0.160.0/three.module.min.js"
+  }
+}
+</script>
+<script type="module">
+import * as THREE from 'three';
+
+// ============================================================
+// Dodecahedron geometry: 20 vertices, 30 edges, 12 pentagonal faces
+// Uses golden ratio coordinates
+// ============================================================
+const phi = (1 + Math.sqrt(5)) / 2;
+const ip = 1 / phi;
+
+// Generate the 20 dodecahedron vertices
+const verts = [];
+// (±1, ±1, ±1)
+for (const x of [-1, 1]) for (const y of [-1, 1]) for (const z of [-1, 1]) {
+  verts.push([x, y, z]);
+}
+// (0, ±1/φ, ±φ) and permutations
+for (const a of [-1, 1]) for (const b of [-1, 1]) {
+  verts.push([0, a*ip, b*phi]);
+  verts.push([a*ip, b*phi, 0]);
+  verts.push([a*phi, 0, b*ip]);
+}
+
+// Compute edges = nearest-neighbor pairs
+function dist(u, v) {
+  return Math.hypot(u[0]-v[0], u[1]-v[1], u[2]-v[2]);
+}
+let minD = Infinity;
+for (let i = 0; i < 20; i++) for (let j = i+1; j < 20; j++) {
+  const d = dist(verts[i], verts[j]);
+  if (d < minD) minD = d;
+}
+const edges = [];
+const adj = Array.from({length: 20}, () => []);
+for (let i = 0; i < 20; i++) for (let j = i+1; j < 20; j++) {
+  if (Math.abs(dist(verts[i], verts[j]) - minD) < 1e-4) {
+    edges.push([i, j]);
+    adj[i].push(j); adj[j].push(i);
+  }
+}
+
+// Find pentagonal faces: 5-cycles that are coplanar
+function find5cycles() {
+  const cycles = new Set();
+  for (let s = 0; s < 20; s++) {
+    function dfs(path) {
+      if (path.length === 5) {
+        if (adj[path[path.length-1]].includes(path[0])) {
+          const sorted = [...path].sort((a,b) => a-b).join(',');
+          cycles.add(sorted);
+        }
+        return;
+      }
+      for (const nb of adj[path[path.length-1]]) {
+        if (!path.includes(nb)) dfs([...path, nb]);
+      }
+    }
+    dfs([s]);
+  }
+  return [...cycles].map(c => c.split(',').map(Number));
+}
+
+function isCoplanar(idxs) {
+  const pts = idxs.map(i => verts[i]);
+  const p0 = pts[0];
+  const v1 = pts[1].map((c, i) => c - p0[i]);
+  const v2 = pts[2].map((c, i) => c - p0[i]);
+  const n = [
+    v1[1]*v2[2] - v1[2]*v2[1],
+    v1[2]*v2[0] - v1[0]*v2[2],
+    v1[0]*v2[1] - v1[1]*v2[0]
+  ];
+  const nmag = Math.hypot(...n);
+  if (nmag < 1e-8) return false;
+  const nn = n.map(x => x/nmag);
+  for (const p of pts.slice(3)) {
+    const d = nn[0]*(p[0]-p0[0]) + nn[1]*(p[1]-p0[1]) + nn[2]*(p[2]-p0[2]);
+    if (Math.abs(d) > 1e-3) return false;
+  }
+  return true;
+}
+
+const allCycles = find5cycles();
+const pentagons = allCycles.filter(isCoplanar);
+// Each vertex sits on 3 pentagons → 20*3 / 5 = 12 pentagons ✓
+
+// Order vertices of each pentagon cyclically (for proper face construction)
+function orderCycle(idxs) {
+  const set = new Set(idxs);
+  const ordered = [idxs[0]];
+  let prev = null;
+  while (ordered.length < 5) {
+    for (const nb of adj[ordered[ordered.length-1]]) {
+      if (set.has(nb) && nb !== prev) {
+        prev = ordered[ordered.length-1];
+        ordered.push(nb);
+        break;
+      }
+    }
+  }
+  return ordered;
+}
+const orderedPentagons = pentagons.map(orderCycle);
+
+// Map each vertex to its 3 incident pentagons
+const vToPents = Array.from({length: 20}, () => []);
+orderedPentagons.forEach((p, pi) => p.forEach(v => vToPents[v].push(pi)));
+
+// ============================================================
+// Semantic content — 12 pentagons (open questions) with
+// teacher-accessible primary text + technical subtitle
+// ============================================================
+const PENTAGON_CONTENT = [
+  {
+    title: "Why this algebra and not another?",
+    technical: "Step 4 — variational selection of A_F in the Connes spectral action",
+    body: "The Standard Model can be built from a very specific small algebra: ℂ ⊕ ℍ ⊕ M₃(ℂ). Why this one? We don't have a principle that picks it out. Every attempt to derive it from a single 'minimize this functional' principle has failed, including the one we built this dodecahedron to test.",
+    footer: "This is the canonical open question of the program. The geometry of the whole sphere is organized around it.",
+    atomNames: null  // filled in from data below
+  },
+  {
+    title: "Three different inputs, identical output",
+    technical: "The 16-dimensional plateau",
+    body: "If you compute the space of allowed Dirac operators for three different algebras — ℂ⊕M₃(ℂ), ℍ⊕M₃(ℂ), and the full SM algebra — you get the exact same 16-dimensional subspace. Not just the same dimension; the same subspace. This means you cannot tell these three algebras apart by looking at their Dirac content alone.",
+    footer: "Verified at machine precision (10⁻¹⁵). This was the cleanest computational finding."
+  },
+  {
+    title: "Why does it take two conditions?",
+    technical: "Two-condition characterization rather than one functional",
+    body: "We can characterize the Standard Model algebra as the smallest one satisfying (1) full Yukawa freedom AND (2) the right gauge factors with the right hypercharge action. But that's two conditions, not one. A real Step 4 closure would be a single principle that implies both. We don't have it.",
+    footer: ""
+  },
+  {
+    title: "Why are quarks and leptons different?",
+    technical: "The 8 → 16 leptoquark carveout mechanism",
+    body: "Pati–Salam unification says leptons are essentially the 'fourth color' of quarks — at high energy, quark and lepton Yukawa couplings should be locked together. In the Standard Model they're not. The algebraic structure that breaks the lock is identified, but the physical mechanism that selects 'broken' over 'unified' is not.",
+    footer: "Source of the well-known m_b / m_τ ≈ 3 prediction after RG running."
+  },
+  {
+    title: "Why exactly three generations?",
+    technical: "The fermion generation count problem",
+    body: "Electrons have heavier siblings: muons and taus. Up quarks have charm and top, down has strange and bottom. Three copies of everything, with vastly different masses. Why three and not two, four, or seven? No framework derives this — it's an empirical brute fact.",
+    footer: "Stays open in every theory of fundamental physics, including this one."
+  },
+  {
+    title: "A suspiciously precise coincidence",
+    technical: "The Koide residue",
+    body: "Take the three charged lepton masses and form a specific combination: K = (mₑ + m_μ + m_τ) / (√mₑ + √m_μ + √m_τ)². The result is 2/3 to about one part in 100,000. Nobody knows whether this is a deep hint or a meaningless coincidence. The formula doesn't survive renormalization-group running cleanly, which makes it harder to take seriously, but the precision keeps physicists from dismissing it.",
+    footer: "Currently undecidable. Coincidence or hint, we cannot tell."
+  },
+  {
+    title: "The worst prediction in physics",
+    technical: "The cosmological constant problem",
+    body: "Quantum field theory predicts a vacuum energy density. Observation gives a different one. They differ by 10¹²⁰ — a factor of one followed by 120 zeros. No serious framework, including the one this dodecahedron belongs to, addresses this discrepancy at all.",
+    footer: "If physics has a single hole, this is the one."
+  },
+  {
+    title: "Why does any of this work at all?",
+    technical: "The unreasonable effectiveness of mathematics (Wigner, 1960)",
+    body: "Internal mathematical structures built without reference to physics — operator algebras, symmetry groups, geometric objects — keep turning out to describe physical reality with bizarre precision. Why? We have no idea. This isn't a question within the theory; it's a question about why the theory is possible at all.",
+    footer: "The meta-defect. Has been open for 65 years."
+  },
+  {
+    title: "Why these specific signs?",
+    technical: "KO-dimension 6 signature",
+    body: "The Standard Model bimodule has three sign relations between its structural operators. These signs single out one possibility out of eight. Connes proved you need exactly this one to recover the SM. But 'you need it because it works' isn't a derivation. Why does nature pick this signature?",
+    footer: "Stated, not derived. Like much of foundational physics."
+  },
+  {
+    title: "Does the spectral action actually do its job?",
+    technical: "Spectral action critical point in A",
+    body: "The spectral action is the candidate functional for closing Step 4. It's known to produce the right physics when you fix the algebra and vary the Dirac operator. The harder question — whether varying the algebra *itself* gives the SM as a critical point — has not been settled in the published literature.",
+    footer: "Whoever closes this closes Step 4."
+  },
+  {
+    title: "Why these particular masses?",
+    technical: "Yukawa hierarchy magnitudes",
+    body: "The electron weighs 0.5 MeV. The top quark weighs 173,000 MeV. Why these specific numbers, with ratios spanning six orders of magnitude? The 16-dimensional Dirac space contains *room* for these parameters, but doesn't fix their values.",
+    footer: ""
+  },
+  {
+    title: "Why do flavors mix the way they do?",
+    technical: "Mixing matrices (CKM, PMNS)",
+    body: "Quark flavors and neutrino flavors don't line up cleanly with the eigenstates of weak interaction. The 'rotation' matrices between them (CKM for quarks, PMNS for neutrinos) have specific empirical values that this framework does not derive. They're inputs, not outputs.",
+    footer: ""
+  }
+];
+
+// Atoms — short names for the 20 vertices
+const ATOM_NAMES = [
+  "Spectral action S",
+  "Dirac operator D",
+  "Heat kernel coefficient a₄",
+  "Algebra representation π",
+  "Cosmological constant value Λ",
+  "Grading operator γ",
+  "Yukawa coupling matrix",
+  "Real structure J",
+  "Unitary group U(A_F)",
+  "dim D(A_F) = 16",
+  "SU(2)_L factor",
+  "Order-one condition",
+  "Quark-lepton paired Yukawa",
+  "Charged lepton mass triple",
+  "λ vs λ* on right-handed up/down",
+  "M₃(ℂ) summand",
+  "U(1)_Y factor",
+  "Bimodule H_F",
+  "ℂ summand of A_F (the contested one)",
+  "ℍ summand of A_F"
+];
+
+// Fill in each pentagon's atom list by reading the geometric incidence:
+// pentagon pi contains 5 atoms = the 5 vertices of the pentagon
+orderedPentagons.forEach((pent, pi) => {
+  PENTAGON_CONTENT[pi].atomNames = pent.map(v => ATOM_NAMES[v]);
+});
+
+// ============================================================
+// Three.js scene setup
+// ============================================================
+const stage = document.getElementById('stage');
+const W = () => window.innerWidth;
+const H = () => window.innerHeight;
+
+const scene = new THREE.Scene();
+scene.background = new THREE.Color(0x0d1014);
+scene.fog = new THREE.Fog(0x0d1014, 6, 14);
+
+const camera = new THREE.PerspectiveCamera(40, W()/H(), 0.1, 100);
+// Camera distance adapts to viewport — on narrow/portrait phones we pull in closer
+// so the dodecahedron fills the screen at a useful size.
+function fitCameraToViewport() {
+  const isNarrow = W() < 720;
+  const isPortrait = H() > W();
+  let dist = 6.5;
+  if (isNarrow && isPortrait) dist = 4.8;
+  else if (isNarrow) dist = 5.5;
+  camera.position.z = dist;
+}
+fitCameraToViewport();
+
+// Update the hint text based on whether this is a touch device
+const isTouchDevice = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0);
+if (isTouchDevice) {
+  document.getElementById('hint').innerHTML =
+    '<span class="key">tap</span> a red pentagon &nbsp;·&nbsp; <span class="key">drag</span> to rotate &nbsp;·&nbsp; <span class="key">pinch</span> to zoom';
+}
+
+const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false });
+renderer.setSize(W(), H());
+renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+stage.appendChild(renderer.domElement);
+
+// A pivot group that rotates everything together
+const pivot = new THREE.Group();
+scene.add(pivot);
+
+// Edges as thin cylinders (LineBasicMaterial doesn't respect width across drivers)
+const edgeMat = new THREE.LineBasicMaterial({
+  color: 0x3a3f48,
+  transparent: true,
+  opacity: 0.6
+});
+const edgeGeom = new THREE.BufferGeometry();
+const edgePositions = new Float32Array(edges.length * 6);
+edges.forEach(([a, b], i) => {
+  edgePositions[i*6+0] = verts[a][0];
+  edgePositions[i*6+1] = verts[a][1];
+  edgePositions[i*6+2] = verts[a][2];
+  edgePositions[i*6+3] = verts[b][0];
+  edgePositions[i*6+4] = verts[b][1];
+  edgePositions[i*6+5] = verts[b][2];
+});
+edgeGeom.setAttribute('position', new THREE.BufferAttribute(edgePositions, 3));
+const edgeLines = new THREE.LineSegments(edgeGeom, edgeMat);
+pivot.add(edgeLines);
+
+// Atoms as spheres
+const atomMat = new THREE.MeshBasicMaterial({ color: 0x8a7bb5 });
+const atomGeom = new THREE.SphereGeometry(0.055, 16, 12);
+const atomMeshes = [];
+verts.forEach((v, i) => {
+  const m = new THREE.Mesh(atomGeom, atomMat);
+  m.position.set(v[0], v[1], v[2]);
+  m.userData = { type: 'atom', idx: i };
+  pivot.add(m);
+  atomMeshes.push(m);
+});
+
+// Pentagonal faces — translucent triangulated meshes
+// Each pentagon: 5 vertices, fan-triangulate from centroid for proper normals
+const pentaGroups = []; // { mesh, glowMesh, idx, normal, centroid }
+
+orderedPentagons.forEach((pent, pi) => {
+  // Compute centroid
+  const centroid = [0,0,0];
+  pent.forEach(vi => {
+    centroid[0] += verts[vi][0];
+    centroid[1] += verts[vi][1];
+    centroid[2] += verts[vi][2];
+  });
+  centroid.forEach((_, i) => centroid[i] /= 5);
+
+  // Compute outward normal (centroid direction since dodec is centered)
+  const nmag = Math.hypot(...centroid);
+  const normal = centroid.map(c => c/nmag);
+
+  // Build mesh: fan from centroid
+  const geom = new THREE.BufferGeometry();
+  // Slightly inset so the pentagon sits just inside the vertices (avoid z-fighting)
+  const inset = 0.985;
+  const positions = [];
+  for (let k = 0; k < 5; k++) {
+    const a = pent[k];
+    const b = pent[(k+1) % 5];
+    positions.push(centroid[0]*inset, centroid[1]*inset, centroid[2]*inset);
+    positions.push(verts[a][0]*inset, verts[a][1]*inset, verts[a][2]*inset);
+    positions.push(verts[b][0]*inset, verts[b][1]*inset, verts[b][2]*inset);
+  }
+  geom.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
+  geom.computeVertexNormals();
+
+  const mat = new THREE.MeshBasicMaterial({
+    color: 0xc14a3b,
+    transparent: true,
+    opacity: 0.0,    // invisible until hover/select
+    side: THREE.DoubleSide,
+    depthWrite: false
+  });
+  const mesh = new THREE.Mesh(geom, mat);
+  mesh.userData = { type: 'pentagon', idx: pi };
+  pivot.add(mesh);
+
+  // Outline (5 edges of the pentagon, drawn slightly outside)
+  const outlinePositions = new Float32Array(5 * 6);
+  for (let k = 0; k < 5; k++) {
+    const a = pent[k], b = pent[(k+1) % 5];
+    const out = 1.01;
+    outlinePositions[k*6+0] = verts[a][0]*out;
+    outlinePositions[k*6+1] = verts[a][1]*out;
+    outlinePositions[k*6+2] = verts[a][2]*out;
+    outlinePositions[k*6+3] = verts[b][0]*out;
+    outlinePositions[k*6+4] = verts[b][1]*out;
+    outlinePositions[k*6+5] = verts[b][2]*out;
+  }
+  const outlineGeom = new THREE.BufferGeometry();
+  outlineGeom.setAttribute('position', new THREE.BufferAttribute(outlinePositions, 3));
+  const outlineMat = new THREE.LineBasicMaterial({
+    color: 0xc14a3b,
+    transparent: true,
+    opacity: 0.35
+  });
+  const outline = new THREE.LineSegments(outlineGeom, outlineMat);
+  pivot.add(outline);
+
+  pentaGroups.push({ mesh, outline, idx: pi, centroid, normal });
+});
+
+// ============================================================
+// Interaction: drag to rotate, scroll/pinch to zoom, hover/tap pentagons
+// ============================================================
+let isDragging = false;
+let dragStartX = 0, dragStartY = 0;
+let totalDragDistance = 0;
+let lastX = 0, lastY = 0;
+let autoRotate = true;
+let rotationVelocityX = 0, rotationVelocityY = 0;
+
+// Track active pointers for pinch-to-zoom
+const activePointers = new Map();
+let pinchStartDistance = 0;
+let pinchStartCameraZ = 0;
+const TAP_THRESHOLD = 6;  // pixels of movement before drag-not-tap
+
+const dom = renderer.domElement;
+
+function pointerDistance() {
+  const pts = [...activePointers.values()];
+  if (pts.length < 2) return 0;
+  return Math.hypot(pts[0].x - pts[1].x, pts[0].y - pts[1].y);
+}
+
+dom.addEventListener('pointerdown', (e) => {
+  dom.setPointerCapture(e.pointerId);
+  activePointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
+
+  if (activePointers.size === 1) {
+    // Start of potential drag/tap with one finger or mouse
+    isDragging = true;
+    autoRotate = false;
+    dragStartX = e.clientX;
+    dragStartY = e.clientY;
+    totalDragDistance = 0;
+    lastX = e.clientX;
+    lastY = e.clientY;
+  } else if (activePointers.size === 2) {
+    // Second finger down — start pinch, abandon drag
+    isDragging = false;
+    pinchStartDistance = pointerDistance();
+    pinchStartCameraZ = camera.position.z;
+  }
+});
+
+dom.addEventListener('pointermove', (e) => {
+  // Update tracked pointer position
+  if (activePointers.has(e.pointerId)) {
+    activePointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
+  }
+
+  if (activePointers.size === 2) {
+    // Pinch zoom
+    const currentDist = pointerDistance();
+    if (pinchStartDistance > 0) {
+      const ratio = pinchStartDistance / currentDist;
+      camera.position.z = Math.max(3.0, Math.min(11, pinchStartCameraZ * ratio));
+    }
+    return;
+  }
+
+  if (isDragging && activePointers.size === 1) {
+    const dx = e.clientX - lastX;
+    const dy = e.clientY - lastY;
+    totalDragDistance += Math.abs(dx) + Math.abs(dy);
+    rotationVelocityY = dx * 0.006;
+    rotationVelocityX = dy * 0.006;
+    pivot.rotation.y += rotationVelocityY;
+    pivot.rotation.x += rotationVelocityX;
+    lastX = e.clientX; lastY = e.clientY;
+  } else if (!isDragging && activePointers.size === 0) {
+    // Hover only matters for mouse, but harmless to keep enabled
+    handleHover(e);
+  }
+});
+
+function endPointer(e) {
+  const wasDragging = isDragging;
+  const dragDist = totalDragDistance;
+  activePointers.delete(e.pointerId);
+
+  if (activePointers.size === 0) {
+    isDragging = false;
+    // If movement was tiny, treat as tap on the pentagon under it
+    if (wasDragging && dragDist < TAP_THRESHOLD) {
+      // Compute raycast at the released location
+      const rect = dom.getBoundingClientRect();
+      mouseNDC.x = ((e.clientX - rect.left) / rect.width) * 2 - 1;
+      mouseNDC.y = -((e.clientY - rect.top) / rect.height) * 2 + 1;
+      const tapped = pickFrontPentagon();
+      if (tapped >= 0) {
+        selectedPentagonIdx = tapped;
+        showPanel(tapped);
+        updatePentagonStyles();
+      }
+    }
+  } else if (activePointers.size === 1) {
+    // Lifted one finger of a pinch — reset drag origin so we don't snap
+    const remaining = [...activePointers.values()][0];
+    lastX = remaining.x; lastY = remaining.y;
+    pinchStartDistance = 0;
+  }
+}
+dom.addEventListener('pointerup', endPointer);
+dom.addEventListener('pointercancel', endPointer);
+
+dom.addEventListener('wheel', (e) => {
+  e.preventDefault();
+  camera.position.z = Math.max(3.0, Math.min(11, camera.position.z + e.deltaY * 0.003));
+}, { passive: false });
+
+// Raycasting for hover/tap
+const raycaster = new THREE.Raycaster();
+const mouseNDC = new THREE.Vector2();
+let hoveredPentagonIdx = -1;
+let selectedPentagonIdx = -1;
+
+// Shared front-pentagon picker — returns the front-facing pentagon under mouseNDC, or -1
+function pickFrontPentagon() {
+  raycaster.setFromCamera(mouseNDC, camera);
+  const meshes = pentaGroups.map(g => g.mesh);
+  const intersects = raycaster.intersectObjects(meshes);
+  const camWorld = new THREE.Vector3();
+  camera.getWorldPosition(camWorld);
+  for (const it of intersects) {
+    const idx = it.object.userData.idx;
+    const g = pentaGroups[idx];
+    const n = new THREE.Vector3(...g.normal).applyEuler(pivot.rotation);
+    const toCam = camWorld.clone().sub(it.point).normalize();
+    if (n.dot(toCam) > 0) return idx;
+  }
+  return -1;
+}
+
+function handleHover(e) {
+  // Only meaningful for non-touch — skip on touch devices to save work
+  if (isTouchDevice) return;
+  const rect = dom.getBoundingClientRect();
+  mouseNDC.x = ((e.clientX - rect.left) / rect.width) * 2 - 1;
+  mouseNDC.y = -((e.clientY - rect.top) / rect.height) * 2 + 1;
+  const frontIdx = pickFrontPentagon();
+  if (frontIdx !== hoveredPentagonIdx) {
+    hoveredPentagonIdx = frontIdx;
+    updatePentagonStyles();
+    dom.style.cursor = frontIdx >= 0 ? 'pointer' : 'grab';
+  }
+}
+
+function updatePentagonStyles() {
+  pentaGroups.forEach((g, i) => {
+    const isHover = i === hoveredPentagonIdx;
+    const isSel = i === selectedPentagonIdx;
+    let opacity = 0.0;
+    let outlineOp = 0.35;
+    if (isSel) { opacity = 0.35; outlineOp = 0.95; }
+    else if (isHover) { opacity = 0.18; outlineOp = 0.75; }
+    g.mesh.material.opacity = opacity;
+    g.outline.material.opacity = outlineOp;
+  });
+}
+
+// Click handler for desktop mouse: select hovered pentagon
+dom.addEventListener('click', (e) => {
+  if (isTouchDevice) return;  // taps handled in endPointer
+  if (hoveredPentagonIdx >= 0) {
+    selectedPentagonIdx = hoveredPentagonIdx;
+    showPanel(hoveredPentagonIdx);
+    updatePentagonStyles();
+  }
+});
+
+// ============================================================
+// Panel
+// ============================================================
+const panel = document.getElementById('panel');
+const pTag = document.getElementById('pTag');
+const pTitle = document.getElementById('pTitle');
+const pTech = document.getElementById('pTech');
+const pBody = document.getElementById('pBody');
+const pAtoms = document.getElementById('pAtoms');
+const pFooter = document.getElementById('pFooter');
+
+function showPanel(idx) {
+  const c = PENTAGON_CONTENT[idx];
+  pTag.textContent = `Open question · pentagon ${idx + 1} of 12`;
+  pTitle.textContent = c.title;
+  pTech.textContent = c.technical;
+  pBody.textContent = c.body;
+  pAtoms.innerHTML = c.atomNames.map(n => `<li>${n}</li>`).join('');
+  pFooter.textContent = c.footer || '';
+  panel.classList.add('open');
+  panel.setAttribute('aria-hidden', 'false');
+}
+
+document.getElementById('closeBtn').addEventListener('click', () => {
+  panel.classList.remove('open');
+  panel.setAttribute('aria-hidden', 'true');
+  selectedPentagonIdx = -1;
+  updatePentagonStyles();
+});
+
+// ESC closes panel
+window.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') {
+    panel.classList.remove('open');
+    selectedPentagonIdx = -1;
+    updatePentagonStyles();
+  }
+});
+
+// ============================================================
+// Animation loop
+// ============================================================
+window.addEventListener('resize', () => {
+  camera.aspect = W() / H();
+  camera.updateProjectionMatrix();
+  renderer.setSize(W(), H());
+  fitCameraToViewport();
+});
+window.addEventListener('orientationchange', () => {
+  setTimeout(() => {
+    camera.aspect = W() / H();
+    camera.updateProjectionMatrix();
+    renderer.setSize(W(), H());
+    fitCameraToViewport();
+  }, 100);
+});
+
+function tick() {
+  if (autoRotate) {
+    pivot.rotation.y += 0.0025;
+    pivot.rotation.x = Math.sin(performance.now() * 0.0002) * 0.15;
+  } else if (!isDragging) {
+    // Gentle inertia
+    pivot.rotation.y += rotationVelocityY;
+    pivot.rotation.x += rotationVelocityX;
+    rotationVelocityY *= 0.94;
+    rotationVelocityX *= 0.94;
+  }
+  renderer.render(scene, camera);
+  requestAnimationFrame(tick);
+}
+tick();
+</script>
+</body>
+</html>
