@@ -1,7 +1,6 @@
 # SpookyPrimes
 
-> This is an early, personal exploration. I have been following patterns that appear across mathematics, physics, and older descriptions of reality. Some of these patterns feel surprisingly coherent. I share them openly, without certainty, and with the hope that they might be useful or interesting to others.
->
+> This started as a funny idea. It collapsed into something smaller and more honest. That smaller thing is what this repository documents.
 
 ---
 
@@ -11,88 +10,111 @@ The core ideas and foundational frameworks are intended to remain open. No paten
 
 ---
 
-A structured exploration of unified physics through spectral geometry and prime-based numerology.
+## What this actually is
+
+A machine-verified computational study of the algebraic structure of the Standard Model, working within Connes' noncommutative geometry framework.
+
+The original hypothesis (a maximalist "Reality Generator" object) did not survive contact with the Choi–Effros–Størmer theorem and careful parameter counting. This repository documents what survived that failure — which turns out to be precise and checkable.
+
+**The surviving results:**
+- An explicit, machine-verified unital ∗-embedding `A_F ↪ A_PS` (correcting an error in the original PDF)
+- `dim D(A_F) = 16` — matching the Standard Model Yukawa parameter count per generation (SVD-verified)
+- A subalgebra plateau: three algebras share this dimension, precisely locating the open problem
+- The Pati-Salam → Standard Model carveout characterized as the breaking of a leptoquark Yukawa pairing
+- Koide ratio K = 0.6666645(5) at PDG 2024, 0.43σ from 2/3, with full Monte Carlo uncertainty propagation
+
+Every numerical claim has a corresponding script. Nothing is adjusted to fit.
+
+---
 
 ## Licensing
 
 - **Code**: MIT License
 
-Specific implementations built on top of these ideas may be patented by their creators.
-
 See the full [LICENSE](LICENSE) file for details.
 
-## The Premise
-
-This repository documents an interconnected framework connecting:
-- **Spectral Action** (Connes' noncommutative geometry)
-- **Particle Physics** (gauge groups, Yukawa structure)
-- **Prime Numerology** (geometric constraints)
-
-## Interactive Visualizations
-
-- [**Dodecahedron View**](https://vsavytsk1.github.io/SpookyPrimes/dodecahedron.html) — Clean rendered page
-
+---
 
 ## Quick Start
 
 ```bash
 git clone https://github.com/vsavytsk1/SpookyPrimes.git
 cd SpookyPrimes
+pip install -r requirements.txt
+python proposition/computational_receipts/phase5_structure.py
 ```
-## Current Contents
 
-| File / Folder       | Description                                       | How to use                  |
-| ------------------- | ------------------------------------------------- | --------------------------- |
-| `README.md`         | Main repository overview and navigation           | Start here                  |
-| `graph.html`        | Interactive ontology / knowledge graph            | Open directly in browser    |
-| `graph.json`        | Graph nodes, links, and visualization data        | Used by `graph.html`        |
-| `dodecahedron.html` | Interactive dodecahedron visualization            | Open directly in browser    |
-| `video.html`        | Embedded video viewer                             | Open directly in browser    |
-| `funny.mp4`         | Demo / experimental video                         | Played through `video.html` |
-| `settings.json`     | Visualization and runtime configuration           | Supporting file             |
-| `docs/`             | Main documentation folder                         | Browse sequentially         |
-| `docs/data/`        | Data files and supporting datasets                | Supporting material         |
-| `docs/media/`       | Images, videos, and visual assets                 | Media resources             |
-| `docs/exp/`         | Experimental derivations and exploratory work     | Research material           |
-| `docs/pubflow/`     | Publication flow, export, and formatting material | Publishing support          |
-| `docs/structure/`   | Repository structure and organizational notes     | Reference material          |
+`phase5_structure.py` prints the core result: the 16-dimensional plateau and its mapping to the Yukawa parameter structure. Everything else is how we got there.
 
 ---
 
-## How to Explore
+## Computational Phases
 
-1. Start with the main overview → `README.md`
-2. Open the interactive ontology graph → `graph.html`
-3. Explore the geometric visualization → `dodecahedron.html`
-4. Watch the demo video → `video.html`
-5. Browse the documentation and derivations → `docs/`
-6. Explore datasets and supporting files → `docs/data/`
-7. Check media and visual assets → `docs/media/`
-8. Read exploratory and experimental material → `docs/exp/`
-9. Explore publication/export tooling → `docs/pubflow/`
+All scripts are in `proposition/computational_receipts/`.
+
+| Script | What it does |
+|---|---|
+| `phase1_koide.py` | Koide ratio at PDG 2024 masses, Monte Carlo uncertainty propagation (2M samples) |
+| `phase2a_explicit_embedding.py` | Explicit unital ∗-embedding A_F → Pati-Salam, 5 independent verification checks |
+| `phase2a_v2.py` | Enumeration variant of the embedding construction |
+| `phase2c_carveout.py` | Bimodule construction for the PS → SM reduction |
+| `phase3_dirac_dim_v2.py` | Dirac operator space via null space of order-one constraints, N=32 Hilbert space |
+| `phase4_fast.py` | Vectorized BLAS scan of the full subalgebra chain — the plateau appears here |
+| `phase5_structure.py` | Subspace equality proofs, 16-dimensional Yukawa parametrization |
+| `phase6_8dim.py` | Pati-Salam 8-dimensional Dirac space, leptoquark Yukawa pairing identification |
+
+### Hilbert space convention
+
+Basis states are indexed as `(a, s, w, c)` where:
+- `a = ±1` — particle / antiparticle
+- `s = ±1` — left / right chirality
+- `w = ±1` — weak isospin
+- `c = 1..4` — color (3 quark + 1 lepton)
+
+Total: N = 32 states per generation.
 
 ---
 
-## Notes
+## The Open Problem
 
-* Most `.html` files are intended to be opened directly in a web browser.
-* `graph.html` loads its structure from `graph.json`.
-* `video.html` uses `funny.mp4` as the media source.
-* `docs/` contains the main derivations, notes, and supporting material.
-* `docs/data/` stores structured datasets and helper files.
-* `docs/media/` contains visual and multimedia assets.
-* `docs/exp/` contains exploratory and experimental research material.
-* `docs/pubflow/` contains publication and formatting workflow material.
-* The repository is experimental and exploratory in nature.
-* Some concepts and visualizations are speculative or unfinished.
+Three algebras share dim D = 16:
 
+| Algebra | Real dim | Dirac dim |
+|---|---|---|
+| C ⊕ M₃(C) | 21 | **16** |
+| H ⊕ M₃(C) | 23 | **16** |
+| A_F = C ⊕ H ⊕ M₃(C) | 25 | **16** |
+
+The Standard Model algebra A_F is not uniquely selected by dim D alone. A variational functional F on finite real spectral triples (KO-dimension 6) that has A_F as its unique critical point — if one exists — must encode gauge content (unitary groups), not just dimension. Finding it, or proving it cannot exist, is the open problem.
+
+---
+
+## Papers (in `proposition/`)
+
+| File | Description |
+|---|---|
+| `funny idea.pdf` | The original maximalist hypothesis — included for honesty, not correctness |
+| `strangeIdea.pdf` | First stress-test: where the original hypothesis breaks |
+| `core research/strange_idea_continued.pdf` | What survived — the actual results documented here |
+| `CoreOntology_funny_coincidence.pdf` | Ontological framing |
+| `RealityGeneratorInspiration.pdf` | The original inspiration, kept for context |
+| `Evaluating a Theory of Everything.pdf` | Epistemological framework used throughout |
+
+---
+
+## Interactive
+
+- `graph.html` — knowledge graph of the full research ontology (open in browser)
+- `graph.json` — underlying graph data
+- `video.html` / `funny.mp4` — because why not
+
+---
 
 ## Status
 
-🔮 **Early exploration** — "Almost funny numerology" that's suspiciously structured.
+The computational work is complete and verified. The open problem is open. Feedback welcome.
 
-Feedback welcome !!!.
-(Twitt-X)@Sagaific
+(Twitt-X) @Sagaific
 
 ---
 
