@@ -4,17 +4,30 @@
 
 ---
 
+## 👇 Open this first. Seriously.
+
+### **[🔴 The Dodecahedron of Open Questions — Live Interactive](https://vsavytsk1.github.io/SpookyPrimes/)**
+
+12 rotating pentagons. Each one is an open problem in physics.
+**Click a red face. Read the question. Then come bac,k here.**
+
+*Works on mobile — pinch to zoom, drag to rotate, tap to explore.*
+
+---
+
 **This work is dedicated to humanity.**
 
 The core ideas and foundational frameworks are intended to remain open. No patents should be filed on the fundamental concepts.
 
 ---
 
-## What this actually is
+## What is this actually about?
 
 A machine-verified computational study of the algebraic structure of the Standard Model, working within Connes' noncommutative geometry framework.
 
 The original hypothesis (a maximalist "Reality Generator" object) did not survive contact with the Choi–Effros–Størmer theorem and careful parameter counting. This repository documents what survived that failure — which turns out to be precise and checkable.
+
+The short version: **we found a 16-dimensional plateau in the space of Dirac operators that maps exactly to the Yukawa parameter count of the Standard Model.** Three algebras tie at this dimension, which precisely locates an open problem nobody has closed yet.
 
 **The surviving results:**
 - An explicit, machine-verified unital ∗-embedding `A_F ↪ A_PS` (correcting an error in the original PDF)
@@ -35,7 +48,7 @@ See the full [LICENSE](LICENSE) file for details.
 
 ---
 
-## Quick Start
+## Run it yourself (5 minutes)
 
 ```bash
 git clone https://github.com/vsavytsk1/SpookyPrimes.git
@@ -104,10 +117,13 @@ The Standard Model algebra A_F is not uniquely selected by dim D alone. A variat
 
 ## Interactive
 
-- `index.html` — The Dodecahedron of Open Questions: 12 pentagonal faces, each an open problem in the program (open in browser)
-- `graph.html` — knowledge graph of the full research ontology (open in browser)
-- `data/graph.json` — underlying graph data for `graph.html`
-- `video.html` / `funny.mp4` — because why not
+| Thing | What it is |
+|---|---|
+| **[🔴 Dodecahedron](https://vsavytsk1.github.io/SpookyPrimes/)** | 12 open problems in physics. Spin it. Click a pentagon. |
+| **[graph.html](graph.html)** | Full research knowledge graph — every concept, every connection |
+| **[video.html](video.html)** | Because why not |
+
+> The dodecahedron works best as your entry point. Each of the 12 faces is a question this program either answered, failed to answer, or precisely located. The geometry is not decorative — a dodecahedron has 12 pentagonal faces, 20 vertices, 30 edges. 20 vertices = 20 named structural elements of the theory. Click them.
 
 ---
 
