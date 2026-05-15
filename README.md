@@ -2,6 +2,16 @@
 
 > This started as a funny idea. It collapsed into something smaller and more honest. That smaller thing is what this repository documents.
 
+<p align="center">
+  <a href="https://vsavytsk1.github.io/SpookyPrimes/">
+    <img src="media/dodecahedron.svg" width="260" alt="Dodecahedron of Open Questions — click to explore"/>
+  </a>
+  <br/>
+  <sub><i>20 vertices · 30 edges · 12 open questions · click to explore</i></sub>
+</p>
+
+
+
 ---
 
 ## 👇 Open this first. Seriously.
