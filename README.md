@@ -14,7 +14,7 @@
 
 ---
 
-## 👇 Open this for very funny Mysteries
+## 👇 Open this first. Seriously.
 
 ### **[🔴 The Dodecahedron of Open Questions — Live Interactive](https://vsavytsk1.github.io/SpookyPrimes/)**
 
@@ -131,7 +131,7 @@ The Standard Model algebra A_F is not uniquely selected by dim D alone. A variat
 |---|---|
 | **[🔴 Dodecahedron](https://vsavytsk1.github.io/SpookyPrimes/)** | 12 open problems in physics. Spin it. Click a pentagon. |
 | **[graph.html](graph.html)** | Full research knowledge graph — every concept, every connection |
-| **[video.html](https://vsavytsk1.github.io/SpookyPrimes/video.html)**   | The Obsidian graph that started it all — native graph view of the research vault, the visual inspiration behind the dodecahedron |
+| **[video.html](video.html)** | Because why not |
 
 > The dodecahedron works best as your entry point. Each of the 12 faces is a question this program either answered, failed to answer, or precisely located. The geometry is not decorative — a dodecahedron has 12 pentagonal faces, 20 vertices, 30 edges. 20 vertices = 20 named structural elements of the theory. Click them.
 
