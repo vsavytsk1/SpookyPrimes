@@ -1,0 +1,949 @@
+\documentclass[11pt,a4paper]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath, amssymb, amsthm, mathtools}
+\usepackage{hyperref}
+\usepackage{xcolor}
+\usepackage[expansion=false]{microtype}
+\usepackage{enumitem}
+\usepackage{booktabs}
+
+\hypersetup{
+  colorlinks=true,
+  linkcolor=black,
+  urlcolor=blue!50!black,
+  citecolor=black,
+}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{observation}[theorem]{Observation}
+\newtheorem*{residue*}{Residue}
+\newtheorem*{remark*}{Remark}
+
+\setlength{\parskip}{0.4em}
+
+\title{A Strange Idea, Followed Further\\
+\large Step 6.3, Actually Done, and What That Showed}
+\author{Vladyslav Savytskyy\\ \small with Claude (Anthropic)}
+\date{May 2026, Argentina \\ \emph{companion to ``A Strange Idea, Followed Honestly''}}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+The previous document stopped one section short of doing the calculation it
+described. This one does the calculation. The result is in every respect
+consistent with the standard result of Chamseddine--Connes--van Suijlekom (2013).
+Along the way, one parenthetical statement of the previous document was found to
+be wrong as written and is corrected here; one numerical claim was redone with
+current data; and the open question that the previous document called Step~4 is
+located one click more precisely. The strange idea did not become any less
+strange. It became better mapped.
+\end{abstract}
+
+{\setlength{\parskip}{0pt}\tableofcontents}
+
+\bigskip
+
+\section{What this document is, and why it exists}
+
+The previous document\footnote{V. Savytskyy with Claude (Anthropic), \emph{A Strange
+Idea, Followed Honestly: The Generator Hypothesis After Every Stress Test We
+Could Apply}, May 2026.} closed with Section~6.3, in which we had attempted to
+set up the explicit $(\widehat A, J, \gamma)$-bimodule for the Pati--Salam
+algebra in code, verified the KO-dimension~6 conditions, and then stopped. The
+stated reasons for stopping were:
+\begin{enumerate}[label=(\arabic*),leftmargin=2em]
+  \item Reproducing the published calculation adds no new information.
+  \item The genuine open question is not answered by reproducing the calculation.
+\end{enumerate}
+Both reasons are defensible. Neither, on reflection, is sufficient. The
+calculation that was paraphrased in three lines is also the calculation that, if
+one wants to test \emph{anything} downstream of the order-one carve-out, one
+needs to actually have running. The previous document had a parenthetical
+assertion about $A_F$ failing to embed as a unital $*$-subalgebra of the
+Pati--Salam algebra; that assertion is, under a literal reading, false, and it
+was made because we had not yet built the embedding. The previous document also
+described the Koide residual to seven decimal places using a number whose
+provenance it did not carefully chase; that number is also approximately right
+but is scheme-dependent, and the provenance turns out to matter slightly.
+
+This document records the calculation done. It is, like its predecessor, not a
+theory and not a framework. It is a record. The audience is presumed to be
+familiar with the previous document; the section numbering continues from there.
+
+\section{Recap, in two paragraphs}
+
+The Generator hypothesis was a maximalist claim that the Standard Model and
+gravitation are consequences of a single self-referential algebraic object. Most
+of its alleged empirical content turned out to be fitted rather than derived; a
+structural rigidity theorem ruled out its central object under its own axioms;
+the honest rewrite reduced the framework to operator-algebraic renormalization
+group theory, which is real, well-studied, and predicts nothing new. The
+residual mathematical question, on which the framework's chance of becoming
+non-trivial entirely rests, is the selection of the finite algebra
+$A_F = \mathbb{C} \oplus \mathbb{H} \oplus M_3(\mathbb{C})$ in Connes's spectral
+action program. This is Step~4. As of May 2026 nobody has closed it.
+
+The previous document located Step~4 inside the algebra-enumeration step of
+Chamseddine--Connes (2007) and at the level of the bimodule decoration. It did
+not, however, build the bimodule. The present document does.
+
+\section{The Koide residual, redone carefully}\label{sec:koide}
+
+Before the structural work, one minor numerical cleanup. The previous document
+quoted
+\[
+  K = \frac{m_e + m_\mu + m_\tau}{(\sqrt{m_e}+\sqrt{m_\mu}+\sqrt{m_\tau})^2}
+    = 0.666661 \pm 0.000007,
+\]
+deviation from $2/3$ at the $10^{-5}$ level. The provenance of the value was
+not specified, and the uncertainty was given without specifying the input set.
+
+Recomputed in this session against current data:
+\begin{itemize}[leftmargin=2em]
+  \item With CODATA~2022 values for $m_e$, $m_\mu$, $m_\tau$ (the last from
+        PDG~2022 propagated into CODATA): $K = 0.6666605(1)$, deviation from
+        $2/3$ of $\sim 9 \times 10^{-6}$, statistical distance from $2/3$
+        approximately $0.91\sigma$ under the quoted uncertainties.
+  \item With PDG~2024 values directly, and in particular the updated
+        $m_\tau = 1776.93 \pm 0.09$~MeV: $K = 0.6666645(5)$, deviation from
+        $2/3$ of $\sim 2 \times 10^{-6}$, statistical distance approximately
+        $0.43\sigma$.
+\end{itemize}
+
+\begin{observation}\label{obs:koide-current}
+For exact agreement $K = 2/3$, the tau mass would need to shift by between
+$+0.04$ and $+0.11$~MeV, well inside the current PDG uncertainty.
+\end{observation}
+
+\begin{observation}\label{obs:koide-scheme}
+$K$ is computed from pole masses. Under one-loop pure QED running it is
+RG-invariant; under full Standard Model running it is not. The
+``$10^{-5}$~level coincidence'' is therefore a coincidence in a specific
+renormalization scheme. Under a different scheme the deviation can be order
+$10^{-3}$ or larger.
+\end{observation}
+
+This does not refute the relation. It does mean that the previous document's
+report of seven-decimal agreement was, on close inspection, agreement in a
+scheme that the document did not name. The honest version is: $K$ is consistent
+with $2/3$ within current experimental uncertainty, in the pole-mass scheme;
+the deviation is at most $1\sigma$, possibly less; no derivation of why this
+should hold exists in any rigorous framework. The relation does not extend
+cleanly to quarks. It may be coincidence; it may be a hint; it is currently
+undecidable. This is the same verdict the previous document reached, with one
+fewer false-precision figure.
+
+\section{The embedding, actually constructed}\label{sec:embedding}
+
+The previous document, in Observation~9, stated:
+
+\begin{quote}\itshape
+Of the four CC07-irreducible candidates at fermion dimension~32 ($M_4(\mathbb{C})$,
+$M_4(\mathbb{R}) \oplus M_4(\mathbb{R})$, $M_2(\mathbb{H}) \oplus M_4(\mathbb{R})$,
+$M_2(\mathbb{H}) \oplus M_2(\mathbb{H})$), none contains $A_F$ as a unital
+$*$-subalgebra. Even the canonical Pati--Salam algebra $M_2(\mathbb{H}) \oplus
+M_4(\mathbb{C})$ does not.
+\end{quote}
+
+The parenthetical about $M_2(\mathbb{H}) \oplus M_4(\mathbb{C})$ is, taken at
+face value, wrong. An explicit unital $*$-embedding exists and we constructed it.
+
+\begin{theorem}\label{thm:embedding}
+There exists a unital $*$-algebra homomorphism
+\[
+  \iota \colon \mathbb{C} \oplus \mathbb{H} \oplus M_3(\mathbb{C})
+  \;\longrightarrow\; M_2(\mathbb{H}) \oplus M_4(\mathbb{C})
+\]
+with zero kernel.
+\end{theorem}
+
+\begin{proof}
+Explicit construction. View $\mathbb{C} \subset \mathbb{H}$ as the subalgebra
+spanned by $\{1, i\}$. For $(\lambda, q, X) \in \mathbb{C} \oplus \mathbb{H}
+\oplus M_3(\mathbb{C})$, define
+\[
+  \iota(\lambda, q, X) \;=\;
+  \Big(\, \operatorname{diag}(\lambda, q) \,\in\, M_2(\mathbb{H}),
+        \;\; \operatorname{diag}(\lambda, X) \,\in\, M_4(\mathbb{C}) \,\Big),
+\]
+where on the right $\operatorname{diag}(\lambda, X)$ places $\lambda$ in the
+$(1,1)$ entry and $X$ in the lower $3 \times 3$ block. Unitality, additivity,
+$\mathbb{R}$-linearity, $*$-preservation and faithfulness all follow by direct
+check. Multiplicativity reduces to multiplicativity of the inclusion
+$\mathbb{C} \hookrightarrow \mathbb{H}$ and of block-diagonal matrix
+multiplication. The image is unital because both blocks are. The kernel is zero
+because each summand of the source is faithfully represented in at least one
+summand of the target.
+\end{proof}
+
+We verified this numerically as a sanity check on the embedding. Over fifty
+independent random elements of $A_F$:
+\begin{itemize}[leftmargin=2em]
+  \item unitality residual: $0$;
+  \item multiplicativity residual: $\le 1.78 \times 10^{-15}$
+        (machine epsilon, double precision);
+  \item additivity, $\mathbb{R}$-linearity, $*$-preservation: residuals all $0$;
+  \item faithfulness check (nonzero elements mapping to zero):
+        $0$ out of $100$.
+\end{itemize}
+
+This is not a deep correction. The previous document's Observation~9 was
+attempting to express a real and well-known fact in the NCG literature, namely
+that $A_F$ is not a \emph{canonical multiplicity-1} unital $*$-subalgebra of the
+Pati--Salam algebra. The K-rank obstruction it pointed to ($10 \neq 12$) is
+real. But the parenthetical sentence, as written, slid from ``no canonical
+inclusion'' to ``no inclusion'', which is a different and stronger and false
+claim. The right statement is the one Chamseddine--Connes--van Suijlekom~2013
+make: $A_F$ is carved out of the Pati--Salam algebra at the level of the
+$(J,\gamma)$-decorated bimodule, by the order-one condition acting on a fixed
+grading, not by the existence or non-existence of an inclusion of algebras at
+the matrix level. Both relationships hold; one is much more informative than
+the other; the previous document was making a sharp point and overshooting
+slightly. The replacement statement is:
+
+\begin{observation}\label{obs:embedding-corrected}
+$A_F$ embeds as a unital $*$-subalgebra of $M_2(\mathbb{H}) \oplus M_4(\mathbb{C})$
+via a multiplicity-2 / corner-3 inclusion. It does not embed as a canonical
+multiplicity-1 unital $*$-subalgebra: the K-rank sum of $A_F$'s natural module
+($2 + 4 + 4 = 10$) does not equal that of the Pati--Salam natural module
+($8 + 4 = 12$). The order-one carve-out from the Pati--Salam algebra to $A_F$
+is therefore a statement about the bimodule, not the algebra.
+\end{observation}
+
+This is what Section~6.3 of the previous document was getting at, before it
+stopped. The next four sections do not stop.
+
+\section{The bimodule, actually built}\label{sec:bimodule}
+
+For one fermion generation, set
+\[
+  H_F \;=\; \mathbb{C}^{32}
+       \;=\; \operatorname{span} \big\{\,|a, s, w, c\rangle \;:\;
+              a \in \{\pm 1\},\; s \in \{\pm 1\},\;
+              w \in \{\pm 1\},\; c \in \{1,2,3,4\}\,\big\},
+\]
+with $a$ indexing particle ($+$) vs antiparticle ($-$), $s$ left ($+$) vs right
+($-$), $w$ the up/down member of the weak doublet, and $c$ the colour, with
+$c \in \{1,2,3\}$ quark colours and $c = 4$ the lepton ``colour.''
+
+\paragraph{Grading and real structure.}
+Define
+\[
+  \gamma\, |a, s, w, c\rangle \;=\; (a \cdot s)\, |a, s, w, c\rangle,
+  \qquad
+  J\, |a, s, w, c\rangle \;=\; |\!-\!a, s, w, c\rangle
+  \;\text{ followed by complex conjugation of coefficients.}
+\]
+With these choices: $\gamma^2 = +1$, $J^2 = +1$, $J\gamma + \gamma J = 0$.
+KO-dimension~6 holds on the nose. The dimension count matches:
+$\operatorname{tr}\gamma = 0$, i.e.\ equal numbers of $+$ and $-$ chirality states.
+
+\paragraph{Algebra action.}
+For $(\lambda, q, m) \in A_F$, define $\pi_F(\lambda, q, m) \in \operatorname{End}(H_F)$
+as follows. On the particle sector ($a = +1$):
+\begin{itemize}[leftmargin=2em]
+  \item Left-handed sector ($s = +1$): the quaternion $q$ acts on the
+        $(w = +1, w = -1)$ doublet via its $M_2(\mathbb{C})$ realisation
+        $q \mapsto \begin{pmatrix} q_0 + i q_1 & q_2 + i q_3 \\
+        -q_2 + i q_3 & q_0 - i q_1 \end{pmatrix}$, with $c$ trivial.
+  \item Right-handed up sector ($s = -1$, $w = +1$): scalar multiplication
+        by $\lambda$.
+  \item Right-handed down sector ($s = -1$, $w = -1$): scalar multiplication
+        by $\bar\lambda$.
+\end{itemize}
+On the antiparticle sector ($a = -1$): $m \in M_3(\mathbb{C})$ acts on the
+quark colour index $c \in \{1,2,3\}$, and $c = 4$ is fixed (identity action).
+The opposite action is $\pi_F^{\mathrm{op}}(a) = J\, \pi_F(a)^*\, J^{-1}$.
+
+\paragraph{Verification.}
+All of the following were checked at machine precision in this session. We
+record the worst-case residuals over the random samples or basis elements used,
+in double-precision arithmetic.
+
+\begin{center}
+\renewcommand{\arraystretch}{1.1}
+\begin{tabular}{lll}
+\toprule
+condition & meaning & residual \\
+\midrule
+$\pi_F(1) = I$ & $\pi_F$ unital & $0$ \\
+$\pi_F(ab) = \pi_F(a)\pi_F(b)$ & $\pi_F$ multiplicative & $1.83 \times 10^{-15}$ \\
+$\pi_F(a^*) = \pi_F(a)^*$ & $*$-preserving & $0$ \\
+$[\gamma, \pi_F(a)] = 0$ & algebra preserves grading & $0$ \\
+$[\pi_F(a), \pi_F^{\mathrm{op}}(b)] = 0$ & bimodule property & $0$ \\
+$J^2 = +I$ & KO-dim 6 sign of $J$ & $0$ \\
+$J\gamma + \gamma J = 0$ & KO-dim 6 anti-commutation & $0$ \\
+$\gamma^2 = I$ & $\mathbb{Z}/2$ grading & $0$ \\
+$D = D^*$ & Dirac is Hermitian & $0$ \\
+$D\gamma + \gamma D = 0$ & Dirac is odd & $0$ \\
+$DJ = JD$ & Dirac commutes with $J$ & $0$ \\
+$[[D, \pi_F(a)], \pi_F^{\mathrm{op}}(b)] = 0$ & order-one for $A_F$ & $0$ \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\bigskip
+
+The non-zero residual $1.83 \times 10^{-15}$ for multiplicativity is the
+unavoidable round-off in composing $32 \times 32$ complex matrix products in
+double precision; one cannot expect better. The other entries are exact zeros
+because the corresponding conditions are computed entry-by-entry from
+permutations and additions, not from matrix multiplications. In short: the
+linear algebra was done correctly.
+
+\paragraph{The Dirac operator.}
+Define $D \in \operatorname{End}(H_F)$ on basis vectors by, for each
+$(w, \mathrm{type})$ where $\mathrm{type} \in \{\mathrm{quark}, \mathrm{lepton}\}$,
+choosing a Yukawa value $y_{w, \mathrm{type}}$ and setting
+\[
+  D\, |+1, +1, w, c\rangle \;=\; y_{w, \mathrm{type}}\, |+1, -1, w, c\rangle,
+  \qquad
+  D\, |+1, -1, w, c\rangle \;=\; \overline{y_{w, \mathrm{type}}}\, |+1, +1, w, c\rangle,
+\]
+with the antiparticle entries fixed by $DJ = JD$. The construction makes $D$
+Hermitian, anti-commuting with $\gamma$, and commuting with $J$.
+
+\paragraph{Order-one.}
+For this $D$ and for $A_F$:
+\[
+  \big[\![ D, \pi_F(a) ], \pi_F^{\mathrm{op}}(b) \big]
+  \;=\; 0
+  \qquad \text{for all } a, b \in A_F,
+\]
+verified at machine precision over random samples.
+
+\paragraph{The carve-out, on the nose.}
+The natural representation of $M_2(\mathbb{H}) \oplus M_4(\mathbb{C})$ acting
+on the same $H_F$ extends $\pi_F$ in the canonical way: $M_2(\mathbb{H})$ acts
+on the $(s,w)$ block of particles (treating $(L_u, L_d, R_u, R_d)$ as
+$\mathbb{H}^2$), and $M_4(\mathbb{C})$ acts on the colour index of
+antiparticles including $c = 4$. Two things are then computationally manifest.
+\begin{itemize}[leftmargin=2em]
+  \item The off-diagonal quaternionic blocks of $M_2(\mathbb{H})$ mix $s = +1$
+        with $s = -1$, so $[\gamma, \pi_{PS}(X)] \neq 0$ for generic
+        $X \in M_2(\mathbb{H}) \oplus M_4(\mathbb{C})$. Residual under
+        random sampling: $\sim 8.2$, which is to say not zero.
+  \item Restricting to the $\gamma$-preserving subalgebra
+        $\mathbb{H}_L \oplus \mathbb{H}_R \oplus M_4(\mathbb{C})$, the
+        order-one condition for the SM Dirac fails:
+        residual $\sim 9.6 \times 10^{-2}$.
+\end{itemize}
+
+\begin{observation}\label{obs:carveout}
+With the bimodule above, $A_F$ satisfies the order-one condition for the SM
+Yukawa Dirac. The natural $\gamma$-preserving extension
+$\mathbb{H}_L \oplus \mathbb{H}_R \oplus M_4(\mathbb{C})$ does not. The
+non-$\gamma$-preserving extension $M_2(\mathbb{H}) \oplus M_4(\mathbb{C})$ does
+not even satisfy $[\gamma, \pi] = 0$. The carve-out is, in this concrete
+computational realisation, a fact about the bimodule.
+\end{observation}
+
+This is the calculation that the previous document said one would have to do.
+We have now done it. The conclusion is the standard one. Section~6.3 of the
+previous document is, with this section, closed in the modest sense of having
+the calculation it pointed at on the table.
+
+\section{The Dirac-dimension functional}\label{sec:diracdim}
+
+Once the bimodule is built, one can ask a question that the previous document
+did not ask, because it had not yet built the bimodule: for a subalgebra
+$\mathcal{A} \subseteq \operatorname{End}(H_F)$ acting on $H_F$ compatibly with
+$\gamma$ and $J$, how large is the space of admissible Dirac operators?
+
+Concretely, define
+\[
+  \mathcal{D}(\mathcal{A}) \;:=\; \Big\{\, D \in \operatorname{End}(H_F)
+  \;:\;
+  D = D^*,\;
+  D\gamma + \gamma D = 0,\;
+  DJ = JD,\;
+  [[D, \pi(a)], \pi^{\mathrm{op}}(b)] = 0\;\forall a, b \in \mathcal{A}
+  \,\Big\},
+\]
+a real linear subspace of $\operatorname{End}(H_F)$.
+
+The first three conditions (Hermiticity, anti-commutation with $\gamma$,
+commutation with $J$) carve a base subspace of $\operatorname{End}(H_F)$. With
+$\dim_{\mathbb{R}} \operatorname{End}(H_F) = 2 \cdot 32^2 = 2048$ and the
+conditions linearly independent, direct computation gives the base null space
+dimension $d_{\mathrm{base}} = 272$. The order-one condition then cuts this
+$272$-dimensional space further, by an amount depending on $\mathcal{A}$.
+
+We computed $\dim_{\mathbb{R}} \mathcal{D}(\mathcal{A})$ for a chain of
+subalgebras. Setting up the constraints in a basis of the base null space and
+taking ranks via QR with column pivoting, the result is the following.
+
+\begin{center}
+\renewcommand{\arraystretch}{1.05}
+\begin{tabular}{lrr}
+\toprule
+Algebra $\mathcal{A}$ & $\dim_{\mathbb{R}} \mathcal{A}$ &
+$\dim_{\mathbb{R}} \mathcal{D}(\mathcal{A})$ \\
+\midrule
+none (i.e.\ only the unit) & 1 & 272 \\
+$\mathbb{C}$ & 3 & 146 \\
+$\mathbb{H}$ & 5 & 146 \\
+$\mathbb{C} \oplus \mathbb{H}$ & 7 & 80 \\
+$M_3(\mathbb{C})$ & 19 & 128 \\
+$\mathbb{C} \oplus M_3(\mathbb{C})$ & 21 & \textbf{16} \\
+$\mathbb{H} \oplus M_3(\mathbb{C})$ & 23 & \textbf{16} \\
+$A_F = \mathbb{C} \oplus \mathbb{H} \oplus M_3(\mathbb{C})$ & 25 & \textbf{16} \\
+$\mathbb{H}_L \oplus \mathbb{H}_R \oplus M_4(\mathbb{C})$ & 41 & 8 \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\bigskip
+
+Two things are worth noting before any interpretation.
+
+\begin{observation}\label{obs:nonmonotone}
+$\dim \mathcal{D}$ is \emph{not} a monotone function of $\dim \mathcal{A}$.
+$M_3(\mathbb{C})$ ($\dim 19$) gives $\dim \mathcal{D} = 128$, while the strictly
+smaller $\mathbb{C} \oplus \mathbb{H}$ ($\dim 7$) gives $\dim \mathcal{D} = 80$.
+The functional depends on which directions of $\operatorname{End}(H_F)$ the
+algebra hits, not on the algebra's dimension.
+\end{observation}
+
+\begin{observation}\label{obs:plateau}
+Three different subalgebras of $A_F$ give $\dim \mathcal{D} = 16$: the algebras
+$\mathbb{C} \oplus M_3(\mathbb{C})$, $\mathbb{H} \oplus M_3(\mathbb{C})$, and
+$A_F$ itself. The full algebra $A_F$ does not impose any further constraint on
+$\mathcal{D}$ beyond what either $\mathbb{C} \oplus M_3(\mathbb{C})$ or
+$\mathbb{H} \oplus M_3(\mathbb{C})$ already imposes.
+\end{observation}
+
+The number $16$ is not arbitrary. Per generation, the SM Yukawa parameters are
+encoded as a $2 \times 2$ Yukawa matrix per fermion type (quark, lepton),
+each entry a complex number. Modulo Hermiticity and $J$-pairing, this gives
+$2 \times 4 \times 2 = 16$ real parameters per generation. The plateau at $16$
+is exactly the per-generation SM Yukawa parameter count.
+
+This is checkable. Set up $16$ explicit physical Yukawa basis Diracs, one per
+$(\mathrm{type}, w_L, w_R, \mathrm{re}/\mathrm{im})$. Each one was verified to
+lie in $\mathcal{D}(A_F)$ with residual $\le 1.6 \times 10^{-14}$. Their image
+in the $16$-dimensional coordinate space of $\mathcal{D}(A_F)$ has rank $16$.
+So:
+
+\begin{theorem}\label{thm:exactly-yukawa}
+$\mathcal{D}(A_F)$ has dimension $16$, and is spanned exactly by the
+$16$-parameter family of physical Yukawa Diracs (per generation, modulo
+Hermiticity and $J$-pairing).
+\end{theorem}
+
+This is what Chamseddine--Connes--van Suijlekom~2013 say. With the bimodule on
+the table, we have just checked it.
+
+\section{$A_F$ is not picked out by $\dim \mathcal{D}$ alone}\label{sec:nonunique}
+
+Observation~\ref{obs:plateau} says the Dirac-dimension functional, taken by
+itself, does not single out $A_F$ among its subalgebras. We pushed on this and
+verified the strongest version of the statement.
+
+\begin{theorem}\label{thm:subspaces-equal}
+As subspaces of $\operatorname{End}(H_F)$,
+\[
+  \mathcal{D}\big(\mathbb{C} \oplus M_3(\mathbb{C})\big)
+  \;=\;
+  \mathcal{D}\big(\mathbb{H} \oplus M_3(\mathbb{C})\big)
+  \;=\;
+  \mathcal{D}(A_F).
+\]
+\end{theorem}
+
+\begin{proof}
+The first two subalgebras are contained in $A_F$, so each imposes a subset of
+$A_F$'s constraints, hence each $\mathcal{D}$ \emph{contains} $\mathcal{D}(A_F)$.
+By Theorem~\ref{thm:exactly-yukawa} and Observation~\ref{obs:plateau} all three
+spaces are 16-dimensional. Containment of finite-dimensional spaces of equal
+dimension is equality.
+
+Numerical confirmation: we computed orthonormal bases for all three subspaces
+and projected one onto another. The projection residuals were
+$\le 7.2 \times 10^{-15}$ in all three pairwise comparisons.
+\end{proof}
+
+This sharpens, in a way that is initially surprising and on reflection slightly
+embarrassing, what the Dirac-dimension functional can and cannot do.
+
+\begin{observation}\label{obs:redundancy}
+The $\mathbb{H}$ summand of $A_F$ imposes zero additional order-one constraint
+on $\mathcal{D}$ beyond what is already imposed by $\mathbb{C} \oplus M_3(\mathbb{C})$.
+Symmetrically, the $\mathbb{C}$ summand imposes zero additional constraint
+beyond what $\mathbb{H} \oplus M_3(\mathbb{C})$ already imposes. The two
+summands $\mathbb{C}$ and $\mathbb{H}$ each independently suffice to cut
+$\mathcal{D}(M_3(\mathbb{C}))$ ($\dim 128$) down to the SM Yukawa subspace
+($\dim 16$). Adding the other contributes nothing further at the level of
+$\mathcal{D}$.
+\end{observation}
+
+This is a real structural fact. It also means that any honest variational
+attempt to pick $A_F$ out using $\dim \mathcal{D}$ as the functional will fail.
+The maximum is attained on a plateau, and the plateau contains $A_F$ as one
+point among at least three. Any unique selection of $A_F$ must use additional
+information.
+
+The natural additional information is the gauge group $U(\mathcal{A})$. We
+record the relevant dimensions and note the salient gap.
+\begin{itemize}[leftmargin=2em]
+  \item $\dim U(\mathbb{C} \oplus M_3(\mathbb{C})) = 1 + 9 = 10$, with
+        $U(\mathbb{C} \oplus M_3(\mathbb{C})) = U(1) \times U(3)$. No
+        $SU(2)$ factor.
+  \item $\dim U(\mathbb{H} \oplus M_3(\mathbb{C})) = 3 + 9 = 12$, with
+        $U(\mathbb{H} \oplus M_3(\mathbb{C})) = SU(2) \times U(3)$.
+  \item $\dim U(A_F) = 1 + 3 + 9 = 13$, with
+        $U(A_F) = U(1) \times SU(2) \times U(3)$, reducing modulo
+        $\mathbb{Z}_6$ to the SM gauge group.
+\end{itemize}
+The two non-$A_F$ algebras at $\dim \mathcal{D} = 16$ are inadequate for the
+following different reasons.
+\begin{itemize}[leftmargin=2em]
+  \item $\mathbb{C} \oplus M_3(\mathbb{C})$: no $SU(2)_L$. No $W$ bosons.
+  \item $\mathbb{H} \oplus M_3(\mathbb{C})$: has $SU(2)$, has $U(1)$, but the
+        $U(1)$ is the determinant phase of $U(3)$ and the $\lambda \leftrightarrow
+        \bar\lambda$ distinction on right-handed up vs.\ down fermions is
+        absent. The Standard Model hypercharge assignments
+        $Y(u_R) \neq Y(d_R)$ require the action of the $\mathbb{C}$ summand on
+        the bimodule, where one gets $\lambda$ on $u_R$ and $\bar\lambda$ on
+        $d_R$. Without that summand the hypercharge assignments are wrong.
+\end{itemize}
+
+Putting these together:
+
+\begin{observation}\label{obs:two-conditions}
+$A_F$ is the minimal $*$-subalgebra of the natural $\gamma$-preserving extension
+of the SM bimodule such that
+\begin{itemize}[leftmargin=2em,nosep]
+  \item $\dim_{\mathbb{R}} \mathcal{D}(\mathcal{A}) \ge 16$ (full SM Yukawa
+        freedom), \emph{and}
+  \item the unitary group $U(\mathcal{A})$ contains both the $SU(2)_L$ factor
+        and the $U(1)$ factor that distinguishes $Y(u_R)$ from $Y(d_R)$ in the
+        bimodule action.
+\end{itemize}
+\end{observation}
+
+Two conditions. Not one.
+
+\section{The 8-dimensional Pati--Salam Dirac space}\label{sec:ps8dim}
+
+The carve-out from Pati--Salam to $A_F$, then, is from $\dim \mathcal{D}
+= 8$ to $\dim \mathcal{D} = 16$. The factor of two suggests a clean structural
+identification, and indeed there is one.
+
+For the algebra $\mathbb{H}_L \oplus \mathbb{H}_R \oplus M_4(\mathbb{C})$
+(which preserves $\gamma$) acting on the same bimodule via the canonical
+extension of $\pi_F$, we computed $\mathcal{D}$ as an 8-dimensional subspace
+of $\mathcal{D}(A_F)$, and expressed each of its basis vectors in the
+physical-Yukawa coordinate system of Theorem~\ref{thm:exactly-yukawa}.
+
+The output is, in every case, of the following form. A basis vector of the
+8-dimensional surviving Dirac space, when written in physical Yukawa
+coordinates, has the structure
+\[
+  \sum_{j} c_j \cdot (\mathrm{quark\ Yukawa})_j
+  \;+\;
+  \sum_{j} c_j \cdot (\mathrm{lepton\ Yukawa})_j,
+\]
+\emph{with the same coefficient $c_j$ on the quark term and on the corresponding
+lepton term.} Each of the 16 individual Yukawa basis directions (8 quark,
+8 lepton) violates the additional constraints by an $O(1)$ amount. Only
+quark--lepton paired combinations survive.
+
+\begin{theorem}\label{thm:ps-leptoquark}
+The eight surviving Dirac directions in $\mathcal{D}(\mathbb{H}_L \oplus
+\mathbb{H}_R \oplus M_4(\mathbb{C}))$ are exactly the leptoquark-unified
+combinations: a combined $(\mathrm{quark} + \mathrm{lepton})$ Yukawa for each
+of the 8 $(w_L, w_R, \mathrm{re}/\mathrm{im})$ assignments, with equal weight
+on quark and lepton.
+\end{theorem}
+
+This is, in plain language, the Pati--Salam prediction that leptons are the
+fourth colour, hence that lepton and quark Yukawas are tied at the unification
+scale. Numerically, after RG running, this is the source of the
+$m_b/m_\tau \approx 3$ low-scale prediction. The carve-out from
+$\mathbb{H}_L \oplus \mathbb{H}_R \oplus M_4(\mathbb{C})$ to $A_F$ is the
+breaking of this tie: the order-one condition for the $\mathbb{C}$ summand of
+$A_F$ acting only on right-handed Standard Model particles, together with the
+restriction from $M_4(\mathbb{C})$ to $M_3(\mathbb{C}) \oplus (\text{trivial on
+leptons})$, is precisely what allows independent quark and lepton Yukawas.
+
+We did not, in this session, observe anything in this analysis that is not
+already in Chamseddine--Connes--van Suijlekom~2013. What is new is the
+computational receipt: the 8-dimensional space is, as a subspace of the
+16-dimensional one, exactly the diagonal quark--lepton matched subspace.
+We have not seen this stated in this form in the published literature.
+We have also not searched the published literature exhaustively. So either
+this is a known consequence stated in slightly different language elsewhere,
+or it has been computed before without being highlighted. Both possibilities
+are likely; both possibilities are fine; the receipts are in
+\texttt{phase6\_8dim.py}.
+
+\section{Step 4, restated}\label{sec:step4-sharpened}
+
+The previous document stated the open question this way:
+
+\begin{quote}\itshape
+The variational principle that would close the framework, if it exists, is a
+functional on $\mathcal{M} = \{\,\text{Krajewski diagrams of KO-dim~6}\,\}
+\times \{\,\text{compatible Dirac moduli}\,\}$ whose minimum (or canonical
+critical point) is the SM bimodule.
+\end{quote}
+
+This is still the question. We can now say slightly more about what such a
+functional must do.
+
+\begin{observation}\label{obs:step4-shape}
+A functional $F$ on $\mathcal{M}$ that singles out $A_F$ uniquely cannot
+factor through $\dim \mathcal{D}$ alone, because that functional plateaus.
+It must combine, in some genuine way, at least the following two kinds of
+information:
+\begin{itemize}[leftmargin=2em,nosep]
+  \item information about the bimodule structure (KO-dimension, order-one
+        carve-out, dimension of admissible Dirac operators);
+  \item information about the unitary group of $\mathcal{A}$ acting on the
+        bimodule (the gauge content, including hypercharge assignments).
+\end{itemize}
+A merely topological or merely representation-theoretic functional will not
+suffice; the function must see both kinds of structure simultaneously. The
+candidate spectral-action functional has this property in principle, since the
+heat-kernel coefficients $a_2, a_4$ involve both eigenvalue content of $D$
+and representation content of $\mathcal{A}$. Whether the unique minimizer is
+$A_F$ remains, as of May 2026, open.
+\end{observation}
+
+The previous document's framing of Step~4 stands. We add one observation: the
+naive simplification ``maximize the dimension of the admissible Dirac space''
+does not work, and the reason it does not work is now visible at the level of
+explicit subspaces. A successful single functional must do more than count.
+
+\section{Residues, after this round}\label{sec:residues-2}
+
+The residues from the previous document remain residues. The only one we
+touched is Koide, and its status is unchanged in substance.
+
+\begin{residue*}[Koide, current status.]
+$K = 0.6666645(5)$ in the pole-mass scheme using PDG~2024 data; consistent
+with $2/3$ to within $0.43\sigma$; not preserved under full SM running. A
+tau-mass shift of $+0.04$ to $+0.11$~MeV (inside current uncertainty)
+would make it exact. No derivation; no quark extension. Coincidence or hint,
+currently undecidable. Per Observation~\ref{obs:koide-scheme}, the
+seven-decimal version of the statement is scheme-specific.
+\end{residue*}
+
+\begin{residue*}[Three generations.]
+No change. Empirical fact, no principled derivation in any rigorous
+framework.
+\end{residue*}
+
+\begin{residue*}[Cosmological constant.]
+No change. Worst quantitative discrepancy in theoretical physics; addressed by
+no current framework.
+\end{residue*}
+
+\begin{residue*}[Selection of $A_F$.]
+Sharper after Sections~\ref{sec:diracdim}--\ref{sec:step4-sharpened}.
+Not closed.
+The cleanest available characterisation of $A_F$ now goes: it is the minimal
+$*$-subalgebra such that (i) the order-one condition on the SM bimodule admits
+the full 16-dimensional Yukawa space, and (ii) the unitary group action carries
+the SM gauge group with correct hypercharge assignments. This is a two-condition
+characterisation, not a one-functional minimisation. Closing Step~4 still
+requires the latter.
+\end{residue*}
+
+\begin{residue*}[Unreasonable effectiveness of operator algebras.]
+No change. The alignment between purely internal operator-algebraic structures
+and physical observers, measurements, scales, and effective theories remains
+unexplained. We did not propose an explanation.
+\end{residue*}
+
+\begin{residue*}[The meta-puzzle, after Wigner.]
+No change. Still 1960.
+\end{residue*}
+
+\section{Verdict, updated}\label{sec:verdict-2}
+
+The previous document's verdict stands without subtraction. We add three lines.
+
+The Generator hypothesis, as originally proposed, did not survive honest
+scrutiny. That has not changed.
+
+The honest rewrite (categorical RG on operator algebras) is mathematical
+physics in a particular dialect and is not new. That has not changed.
+
+The closest existing program (Connes's spectral action) recovers the bosonic
+Standard Model from one functional given $A_F$. That has not changed.
+
+What changed in this session:
+\begin{itemize}[leftmargin=2em]
+  \item The Section~6.3 calculation that the previous document gestured at is
+        now on the table, end-to-end, at machine precision.
+  \item One parenthetical sentence of the previous document
+        (Observation~\ref{obs:embedding-corrected}) was corrected.
+  \item The functional approach to Step~4 was tested at the level of
+        $\dim \mathcal{D}$, and shown to plateau in a way that rules out the
+        naive single-functional minimisation. The successful functional must
+        see both bimodule structure and gauge content, simultaneously.
+  \item The structural meaning of the 8-vs-16 dimensional carve-out was
+        located: it is precisely the breaking of Pati--Salam leptoquark
+        unification at the level of Yukawa parameters.
+\end{itemize}
+
+None of these closes Step~4. The previous document's summary remains:
+
+\begin{quote}\itshape
+We did not close it. We did locate it.
+\end{quote}
+
+We located it slightly more precisely. That is the substantive content of this
+document, and it is smaller than the calculation that produced it would
+suggest. This is normal. Honest work has this shape.
+
+\section{What this document is}\label{sec:what-this-is}
+
+This document is, like its predecessor, a record. It is not a theory, not a
+framework, not a derivation of the universe from one equation. The arithmetic
+in it was done in Python in a sandboxed environment with a wall clock; the
+linear algebra ran in BLAS; the SVDs were computed with LAPACK; the
+constructions matched the published literature wherever they overlapped.
+Receipts for everything in Sections~\ref{sec:embedding}--\ref{sec:ps8dim} are
+in the files \texttt{phase2a\_explicit\_embedding.py},
+\texttt{phase2c\_carveout.py}, \texttt{phase3\_dirac\_dim\_v2.py},
+\texttt{phase4\_fast.py}, \texttt{phase5\_structure.py}, and
+\texttt{phase6\_8dim.py}. The numerical precision of every reported residual
+can be reproduced by anyone with a Python installation; the patience required
+is approximately one hour of compute on a 4~GB single-core machine.
+
+The strange idea, in the form it survives after this further round, is
+exactly as strange as it was before, and not strange in any new way. It still
+points at one open question. It has not become a theory; it has not become a
+framework. The thing it did, in this round, was to acquire one more layer of
+precision around the open question. The next round, if there is one, would
+either close the question or determine that it cannot be closed without
+genuinely new mathematical ideas.
+
+Both possibilities remain interesting. Neither is currently known. The
+strangeness has not gone anywhere. It has been measured a little more
+carefully.
+
+That is enough.
+
+\appendix
+
+\section{Computational receipts}\label{app:receipts}
+
+This section records, for each substantive computational claim in the body of
+the document, the file in which it was carried out, the principal verification
+performed, and the worst-case numerical residual obtained. All computations
+were performed in Python with \texttt{numpy} 2.4.4 and \texttt{scipy} 1.17.1 in
+double precision, in a sandboxed environment with no external network access.
+The wall-clock cost of reproducing the full set is approximately one hour on a
+single-core 4~GB machine.
+
+\begin{center}
+\renewcommand{\arraystretch}{1.15}
+\begin{tabular}{p{4.6cm}p{6cm}p{3.4cm}}
+\toprule
+file & verifies & worst residual \\
+\midrule
+\texttt{phase1\char`_koide.py} &
+Koide ratio under CODATA 2022 and PDG 2024; tau-mass shift for $K = 2/3$;
+$\sigma$-distance &
+data-driven (see Sec.~\ref{sec:koide}) \\
+\texttt{phase2a\char`_v2.py} &
+enumeration of 9421 finite real semisimple $*$-algebras up to real dim 96
+and 5 summands; CC07-admissible count 91; unital $*$-subalgebra obstruction
+for $A_F$ in fermion-dim-32 candidates &
+combinatorial \\
+\texttt{phase2a\char`_explicit\char`_\allowbreak embedding.py} &
+the explicit map $\iota: A_F \to M_2(\mathbb{H}) \oplus M_4(\mathbb{C})$ of
+Theorem~\ref{thm:embedding}; unitality, multiplicativity, additivity,
+$\mathbb{R}$-linearity, $*$-preservation, faithfulness over 50 random elements
+each &
+$1.78 \times 10^{-15}$ \\
+\texttt{phase2c\char`_carveout.py} &
+the full bimodule of Section~\ref{sec:bimodule}; all entries of the
+verification table; order-one for $A_F$; the $[\gamma, \pi_{PS}] \neq 0$
+obstruction; order-one failure for
+$\mathbb{H}_L \oplus \mathbb{H}_R \oplus M_4(\mathbb{C})$ &
+$1.83 \times 10^{-15}$ for non-zero entries; obstruction residuals $8.23$
+and $9.63 \times 10^{-2}$ \\
+\texttt{phase3\char`_dirac\char`_\allowbreak dim\char`_v2.py} &
+$d_{\mathrm{base}} = 272$ via SVD of the stacked
+Hermitian+anti-$\gamma$+commute-$J$ constraint matrix;
+$\dim \mathcal{D}(A_F) = 16$;
+$\dim \mathcal{D}(\mathbb{H}_L \oplus \mathbb{H}_R \oplus M_4(\mathbb{C})) = 8$
+via QR-based rank determination &
+SVD tolerance $10^{-10} \cdot \sigma_{\max}$ \\
+\texttt{phase4\char`_fast.py} &
+the full chain of subalgebras in Section~\ref{sec:diracdim} using batched
+\texttt{numpy} order-one constraint computation; the plateau
+$\dim \mathcal{D} = 16$ for $\mathbb{C} \oplus M_3$,
+$\mathbb{H} \oplus M_3$, and $A_F$; identification of the 16 physical Yukawa
+basis Diracs and rank check &
+$\le 1.64 \times 10^{-14}$ \\
+\texttt{phase5\char`_structure.py} &
+subspace equality
+$\mathcal{D}(\mathbb{C} \oplus M_3) = \mathcal{D}(\mathbb{H} \oplus M_3) =
+\mathcal{D}(A_F)$ via projector residual; containment in
+$\mathcal{D}(M_3)$; projection of the explicit SM Yukawa Dirac onto
+$\mathcal{D}(A_F)$; rank verification of the physical Yukawa basis &
+$\le 7.20 \times 10^{-15}$ for subspace equality;
+$6.69 \times 10^{-17}$ for SM Dirac projection \\
+\texttt{phase6\char`_8dim.py} &
+the 8-dimensional Dirac space of
+$\mathbb{H}_L \oplus \mathbb{H}_R \oplus M_4(\mathbb{C})$ computed by projecting
+its additional order-one constraints onto $\mathcal{D}(A_F)$; expression of
+each surviving basis direction in the physical Yukawa coordinate system;
+verification that quark and lepton coefficients in each surviving direction
+are paired (equal) &
+matched-coefficient pairing exact within tolerance $10^{-8}$ \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\bigskip
+
+The python files are not included here; they exist in the working environment
+in which this document was produced. Anyone wishing to reproduce the
+computations should be able to write equivalent scripts in less than a day
+from the specifications in Sections~\ref{sec:embedding} through
+\ref{sec:ps8dim} of this document.
+
+\section{Notes on what a successful Step~4 functional must do}\label{app:step4-shape}
+
+We do not, in this document or elsewhere, propose a functional that closes
+Step~4. Observation~\ref{obs:step4-shape} restricts the shape of any such
+functional. We record here a slightly longer list of properties such a
+functional $F$ would need to have, in case it is useful for anyone attempting
+to construct one.
+
+\begin{enumerate}[leftmargin=2em]
+  \item $F$ must depend on the bimodule $(A, H_F, \gamma, J, \pi)$, not just on
+        the algebra $A$. The Dirac-dimension functional already has this
+        property; the plateau at $\dim \mathcal{D} = 16$ across three different
+        subalgebras of $A_F$ shows that bimodule structure alone is not
+        sufficient either.
+  \item $F$ must distinguish $A_F$ from $\mathbb{H} \oplus M_3(\mathbb{C})$
+        despite the two having the same Dirac space.
+        The visible discriminator is the action of the $\mathbb{C}$ summand of
+        $A_F$ on the right-handed up vs.\ down sectors via $\lambda$ vs.\
+        $\bar\lambda$, which is what gives the $Y(u_R) \neq Y(d_R)$ structure.
+        Any successful $F$ must therefore see hypercharge assignments at the
+        level of the representation, not just at the level of the gauge group.
+  \item $F$ must distinguish $A_F$ from $\mathbb{C} \oplus M_3(\mathbb{C})$
+        despite the same Dirac space. Here the visible discriminator is the
+        presence of $SU(2)_L$ in the gauge group. Any successful $F$ must
+        therefore involve a non-abelian piece.
+  \item $F$ must, taken across the chain of Section~\ref{sec:diracdim}, single
+        out $A_F$ over $\mathbb{H}_L \oplus \mathbb{H}_R \oplus M_4(\mathbb{C})$,
+        i.e.\ choose the SM over Pati--Salam. This requires
+        $F$ to prefer the un-unified Yukawa structure
+        ($\dim \mathcal{D} = 16$) over the leptoquark-unified structure
+        ($\dim \mathcal{D} = 8$). On the face of it, this looks like preferring
+        \emph{more} Dirac freedom, which is a sensible criterion. Any
+        successful $F$ must, however, also choose $A_F$ specifically over its
+        other equally-Dirac-free subalgebras, per points (2) and (3) above.
+        Hence $F$ cannot be simply ``maximise $\dim \mathcal{D}$.''
+  \item The spectral action functional
+        $S[D] = \mathrm{Tr}\, f(D/\Lambda) + \langle \psi, D\psi \rangle$
+        is the natural candidate, because the heat-kernel coefficients
+        $a_n$ mix Dirac spectrum content with representation content of $A$.
+        The question of whether the spectral action's value at the SM is
+        actually a critical point in $A$ (not just in $D$) does not appear to
+        have been settled in the literature as of May~2026.
+  \item Khalkhali--Pagliaroli~\cite{khalkhali-pagliaroli} propose a moment-method
+        / SDP bootstrap on Dirac ensembles, which provides numerical evidence
+        for clustering of Dirac spectra near specific algebras. The bootstrap
+        as currently formulated does not select $A_F$ uniquely either, but
+        gives the closest existing tractable framework in which one could test
+        a candidate $F$.
+\end{enumerate}
+
+We list these because they constitute a kind of negative specification: any
+proposal for a Step~4 functional that fails any of (1)--(4) cannot be right,
+and any proposal that passes all of them is worth taking seriously. We have
+not produced such a proposal. This is, again, where the genuine open
+question lives.
+
+\bigskip\bigskip
+
+\begin{thebibliography}{99}
+
+\bibitem{wigner1960}
+E.~P. Wigner, ``The Unreasonable Effectiveness of Mathematics in the Natural
+Sciences,'' \emph{Comm.\ Pure Appl.\ Math.}\ \textbf{13} (1960) 1.
+
+\bibitem{krajewski1998}
+T.~Krajewski, ``Classification of Finite Spectral Triples,''
+\emph{J.\ Geom.\ Phys.}\ \textbf{28} (1998) 1; arXiv:hep-th/9701081.
+
+\bibitem{cc2007}
+A.~H. Chamseddine and A.~Connes, ``Why the Standard Model,''
+\emph{J.\ Geom.\ Phys.}\ \textbf{58} (2008) 38; arXiv:0706.3688.
+Companion: \emph{Phys.\ Rev.\ Lett.}\ \textbf{99} (2007) 191601;
+arXiv:0706.3690.
+
+\bibitem{ccvs2013a}
+A.~H. Chamseddine, A.~Connes, and W.~D. van Suijlekom, ``Inner Fluctuations
+without the First Order Condition,'' \emph{J.\ Geom.\ Phys.}\ \textbf{73}
+(2013) 222; arXiv:1304.7583.
+
+\bibitem{ccvs2013b}
+A.~H. Chamseddine, A.~Connes, and W.~D. van Suijlekom, ``Beyond the Spectral
+Standard Model: Emergence of Pati--Salam Unification,'' \emph{JHEP} \textbf{11}
+(2013) 132; arXiv:1304.8050.
+
+\bibitem{boyle2018}
+L.~Boyle and S.~Farnsworth, ``A new algebraic structure in the standard model
+of particle physics,'' \emph{JHEP} \textbf{06} (2018) 071; arXiv:1604.00847.
+
+\bibitem{ccvs2020}
+A.~H. Chamseddine, A.~Connes, and W.~D. van Suijlekom, ``Entropy and the
+Spectral Action,'' \emph{Comm.\ Math.\ Phys.}\ \textbf{373} (2020) 457;
+arXiv:1809.02944.
+
+\bibitem{connes-marcolli}
+A.~Connes and M.~Marcolli, \emph{Noncommutative Geometry, Quantum Fields and
+Motives}, AMS Colloquium Publications, vol.~55 (2008).
+
+\bibitem{vansuijlekom-book}
+W.~D. van Suijlekom, \emph{Noncommutative Geometry and Particle Physics},
+Mathematical Physics Studies (Springer, 2015).
+
+\bibitem{jureit-stephan}
+J.-H.~Jureit and C.~A. Stephan, ``On a Classification of Irreducible
+Almost-Commutative Geometries V,'' arXiv:0901.3214.
+
+\bibitem{khalkhali-pagliaroli}
+M.~Khalkhali and N.~Pagliaroli, ``Bootstrapping Noncommutative Geometry with
+Dirac Ensembles,'' arXiv:2512.08694.
+
+\bibitem{pdg2024}
+S.~Navas \emph{et al.\ }(Particle Data Group),
+``Review of Particle Physics,'' \emph{Phys.\ Rev.\ D} \textbf{110} (2024) 030001.
+
+\bibitem{codata2022}
+E.~Tiesinga, P.~J. Mohr, D.~B. Newell, and B.~N. Taylor, ``CODATA recommended
+values of the fundamental physical constants: 2022,''
+\emph{Rev.\ Mod.\ Phys.}\ \textbf{97} (2025) 025002.
+
+\bibitem{strange-idea}
+V.~Savytskyy with Claude (Anthropic), ``A Strange Idea, Followed Honestly:
+The Generator Hypothesis After Every Stress Test We Could Apply,''
+companion document, May 2026.
+
+\bibitem{deflated-rewrite}
+V.~Savytskyy and Claude (Anthropic), ``The Algebraic Core of Reality,
+Honestly: A Maximally Deflated Rewrite,'' May 2026.
+
+\end{thebibliography}
+
+\end{document}

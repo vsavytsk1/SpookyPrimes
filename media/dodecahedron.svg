@@ -1,0 +1,86 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 300" width="300" height="300">
+<defs>
+  <filter id="gr"><feGaussianBlur stdDeviation="2.5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+  <filter id="gs"><feGaussianBlur stdDeviation="4" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+  <filter id="gb"><feGaussianBlur stdDeviation="8" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+  <style>
+    .spin{animation:spin 18s linear infinite;transform-origin:150px 150px}
+    .p1{animation:pulse 4s ease-in-out infinite}
+    .p2{animation:pulse 4s ease-in-out infinite 0.8s}
+    .p3{animation:pulse 4s ease-in-out infinite 1.6s}
+    .p4{animation:pulse 4s ease-in-out infinite 2.4s}
+    .p5{animation:pulse 4s ease-in-out infinite 3.2s}
+    .glow{animation:glow 4s ease-in-out infinite}
+    @keyframes spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+    @keyframes pulse{0%,100%{opacity:.12}50%{opacity:.42}}
+    @keyframes glow{0%,100%{opacity:.5}50%{opacity:1}}
+  </style>
+</defs>
+<rect width="300" height="300" fill="#060914"/>
+<circle cx="150" cy="150" r="80" fill="#8b0000" opacity="0.06" filter="url(#gb)"/>
+<g class="spin">
+  <polygon points="150,35 41,115 82,243 218,243 259,115" fill="#3d0000" opacity="0.18" class="p1"/>
+  <polygon points="150,35 41,115 63,122 112,97 150,58" fill="#6b0000" opacity="0.28" class="p2" filter="url(#gr)"/>
+  <polygon points="41,115 82,243 96,224 88,170 63,122" fill="#6b0000" opacity="0.28" class="p3" filter="url(#gr)"/>
+  <polygon points="82,243 218,243 204,224 150,215 96,224" fill="#6b0000" opacity="0.28" class="p4" filter="url(#gr)"/>
+  <polygon points="218,243 259,115 238,122 212,170 204,224" fill="#6b0000" opacity="0.28" class="p5" filter="url(#gr)"/>
+  <polygon points="259,115 150,35 150,58 188,97 238,122" fill="#6b0000" opacity="0.28" class="p1" filter="url(#gr)"/>
+  <polygon points="112,97 150,125 174,142 188,97 150,58" fill="#aa1100" opacity="0.35" class="p2" filter="url(#gr)"/>
+  <polygon points="88,170 126,142 150,125 112,97 63,122" fill="#aa1100" opacity="0.35" class="p3" filter="url(#gr)"/>
+  <polygon points="150,215 135,170 126,142 88,170 96,224" fill="#aa1100" opacity="0.35" class="p4" filter="url(#gr)"/>
+  <polygon points="212,170 165,170 135,170 150,215 204,224" fill="#aa1100" opacity="0.35" class="p5" filter="url(#gr)"/>
+  <polygon points="188,97 174,142 165,170 212,170 238,122" fill="#aa1100" opacity="0.35" class="p1" filter="url(#gr)"/>
+  <polygon points="150,125 126,142 135,170 165,170 174,142" fill="#ff2200" opacity="0.6" class="glow" filter="url(#gs)"/>
+  <line x1="150" y1="35"  x2="41"  y2="115" stroke="#cc2200" stroke-width="1.5" filter="url(#gr)"/>
+  <line x1="41"  y1="115" x2="82"  y2="243" stroke="#cc2200" stroke-width="1.5" filter="url(#gr)"/>
+  <line x1="82"  y1="243" x2="218" y2="243" stroke="#cc2200" stroke-width="1.5" filter="url(#gr)"/>
+  <line x1="218" y1="243" x2="259" y2="115" stroke="#cc2200" stroke-width="1.5" filter="url(#gr)"/>
+  <line x1="259" y1="115" x2="150" y2="35"  stroke="#cc2200" stroke-width="1.5" filter="url(#gr)"/>
+  <line x1="150" y1="35"  x2="150" y2="58"  stroke="#cc2200" stroke-width="1.3" filter="url(#gr)"/>
+  <line x1="41"  y1="115" x2="63"  y2="122" stroke="#cc2200" stroke-width="1.3" filter="url(#gr)"/>
+  <line x1="82"  y1="243" x2="96"  y2="224" stroke="#cc2200" stroke-width="1.3" filter="url(#gr)"/>
+  <line x1="218" y1="243" x2="204" y2="224" stroke="#cc2200" stroke-width="1.3" filter="url(#gr)"/>
+  <line x1="259" y1="115" x2="238" y2="122" stroke="#cc2200" stroke-width="1.3" filter="url(#gr)"/>
+  <line x1="150" y1="58"  x2="112" y2="97"  stroke="#dd2200" stroke-width="1.3" filter="url(#gr)"/>
+  <line x1="150" y1="58"  x2="188" y2="97"  stroke="#dd2200" stroke-width="1.3" filter="url(#gr)"/>
+  <line x1="63"  y1="122" x2="112" y2="97"  stroke="#dd2200" stroke-width="1.3" filter="url(#gr)"/>
+  <line x1="63"  y1="122" x2="88"  y2="170" stroke="#dd2200" stroke-width="1.3" filter="url(#gr)"/>
+  <line x1="96"  y1="224" x2="88"  y2="170" stroke="#dd2200" stroke-width="1.3" filter="url(#gr)"/>
+  <line x1="96"  y1="224" x2="150" y2="215" stroke="#dd2200" stroke-width="1.3" filter="url(#gr)"/>
+  <line x1="204" y1="224" x2="150" y2="215" stroke="#dd2200" stroke-width="1.3" filter="url(#gr)"/>
+  <line x1="204" y1="224" x2="212" y2="170" stroke="#dd2200" stroke-width="1.3" filter="url(#gr)"/>
+  <line x1="238" y1="122" x2="212" y2="170" stroke="#dd2200" stroke-width="1.3" filter="url(#gr)"/>
+  <line x1="238" y1="122" x2="188" y2="97"  stroke="#dd2200" stroke-width="1.3" filter="url(#gr)"/>
+  <line x1="112" y1="97"  x2="150" y2="125" stroke="#ff3311" stroke-width="1.4" filter="url(#gs)"/>
+  <line x1="88"  y1="170" x2="126" y2="142" stroke="#ff3311" stroke-width="1.4" filter="url(#gs)"/>
+  <line x1="150" y1="215" x2="135" y2="170" stroke="#ff3311" stroke-width="1.4" filter="url(#gs)"/>
+  <line x1="212" y1="170" x2="165" y2="170" stroke="#ff3311" stroke-width="1.4" filter="url(#gs)"/>
+  <line x1="188" y1="97"  x2="174" y2="142" stroke="#ff3311" stroke-width="1.4" filter="url(#gs)"/>
+  <line x1="150" y1="125" x2="126" y2="142" stroke="#ff4422" stroke-width="1.6" filter="url(#gs)"/>
+  <line x1="126" y1="142" x2="135" y2="170" stroke="#ff4422" stroke-width="1.6" filter="url(#gs)"/>
+  <line x1="135" y1="170" x2="165" y2="170" stroke="#ff4422" stroke-width="1.6" filter="url(#gs)"/>
+  <line x1="165" y1="170" x2="174" y2="142" stroke="#ff4422" stroke-width="1.6" filter="url(#gs)"/>
+  <line x1="174" y1="142" x2="150" y2="125" stroke="#ff4422" stroke-width="1.6" filter="url(#gs)"/>
+  <circle cx="150" cy="35"  r="2.5" fill="#ff6644" filter="url(#gr)"/>
+  <circle cx="41"  cy="115" r="2.5" fill="#ff6644" filter="url(#gr)"/>
+  <circle cx="82"  cy="243" r="2.5" fill="#ff6644" filter="url(#gr)"/>
+  <circle cx="218" cy="243" r="2.5" fill="#ff6644" filter="url(#gr)"/>
+  <circle cx="259" cy="115" r="2.5" fill="#ff6644" filter="url(#gr)"/>
+  <circle cx="150" cy="58"  r="2.2" fill="#ff5533" filter="url(#gr)"/>
+  <circle cx="63"  cy="122" r="2.2" fill="#ff5533" filter="url(#gr)"/>
+  <circle cx="96"  cy="224" r="2.2" fill="#ff5533" filter="url(#gr)"/>
+  <circle cx="204" cy="224" r="2.2" fill="#ff5533" filter="url(#gr)"/>
+  <circle cx="238" cy="122" r="2.2" fill="#ff5533" filter="url(#gr)"/>
+  <circle cx="112" cy="97"  r="2.2" fill="#ff4422" filter="url(#gs)"/>
+  <circle cx="88"  cy="170" r="2.2" fill="#ff4422" filter="url(#gs)"/>
+  <circle cx="150" cy="215" r="2.2" fill="#ff4422" filter="url(#gs)"/>
+  <circle cx="212" cy="170" r="2.2" fill="#ff4422" filter="url(#gs)"/>
+  <circle cx="188" cy="97"  r="2.2" fill="#ff4422" filter="url(#gs)"/>
+  <circle cx="150" cy="125" r="3"   fill="#ff6600" filter="url(#gs)"/>
+  <circle cx="126" cy="142" r="3"   fill="#ff6600" filter="url(#gs)"/>
+  <circle cx="135" cy="170" r="3"   fill="#ff6600" filter="url(#gs)"/>
+  <circle cx="165" cy="170" r="3"   fill="#ff6600" filter="url(#gs)"/>
+  <circle cx="174" cy="142" r="3"   fill="#ff6600" filter="url(#gs)"/>
+</g>
+<text x="150" y="285" text-anchor="middle" font-family="monospace" font-size="9" fill="#cc2200" opacity="0.7" letter-spacing="3">SPOOKYPRIMES</text>
+</svg>
