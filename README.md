@@ -104,8 +104,9 @@ The Standard Model algebra A_F is not uniquely selected by dim D alone. A variat
 
 ## Interactive
 
+- `index.html` — The Dodecahedron of Open Questions: 12 pentagonal faces, each an open problem in the program (open in browser)
 - `graph.html` — knowledge graph of the full research ontology (open in browser)
-- `graph.json` — underlying graph data
+- `data/graph.json` — underlying graph data for `graph.html`
 - `video.html` / `funny.mp4` — because why not
 
 ---
