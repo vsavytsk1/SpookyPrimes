@@ -1,0 +1,12 @@
+﻿# Personal files - local only, never pushed
+_private/
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+
+# OS
+.DS_Store
+Thumbs.db
+

@@ -1,0 +1,264 @@
+2026-05-15 00:49:51,525 | INFO | GPU ONLINE: CuPy active — RTX 3060
+2026-05-15 00:49:51,526 | INFO | Hilbert space: N = 32, basis |a,s,w,c>
+2026-05-15 00:49:51,526 | INFO | KO-dim 6: J^2=+1, Jgamma+gammaJ=0  [from phase2c]
+2026-05-15 00:49:51,526 | INFO | ======================================================================
+2026-05-15 00:49:51,527 | INFO | PHASE 7: GAUGE-CONTENT FUNCTIONAL
+2026-05-15 00:49:51,527 | INFO | Breaking the subalgebra plateau via U(A) action on D(A)
+2026-05-15 00:49:51,527 | INFO | ======================================================================
+2026-05-15 00:49:51,527 | INFO | Hardware: GPU (RTX 3060 CuPy)
+2026-05-15 00:49:51,527 | INFO | Building base null space (Hermitian + anti-gamma + J-commute)...
+2026-05-15 00:49:56,678 | INFO |   d_base = 272  [5.15s]
+2026-05-15 00:49:56,690 | INFO | 
+2026-05-15 00:49:56,690 | INFO | ======================================================================
+2026-05-15 00:49:56,690 | INFO | STEP 1: Null spaces for the three plateau algebras
+2026-05-15 00:49:56,690 | INFO | ======================================================================
+2026-05-15 00:50:20,994 | INFO |   C + M3                               dim D =  16  pairs= 441  [24.30s]
+2026-05-15 00:50:49,660 | INFO |   H + M3                               dim D =  16  pairs= 529  [28.66s]
+2026-05-15 00:51:24,965 | INFO |   A_F                                  dim D =  16  pairs= 625  [35.31s]
+2026-05-15 00:51:24,965 | INFO | 
+2026-05-15 00:51:24,965 | INFO | Plateau confirmed: all three algebras give dim D = 16
+2026-05-15 00:51:24,965 | INFO | 
+2026-05-15 00:51:24,965 | INFO | ======================================================================
+2026-05-15 00:51:24,965 | INFO | STEP 2: Build gauge generators for each plateau algebra
+2026-05-15 00:51:24,965 | INFO | ======================================================================
+2026-05-15 00:51:24,965 | INFO | Total generators built: 13
+2026-05-15 00:51:24,965 | INFO |   U1_C                  Hermitian residual: 0.00e+00  | present in C+M3 and A_F; ABSENT in H+M3
+2026-05-15 00:51:24,965 | INFO |   SU2_H1                Hermitian residual: 0.00e+00  | present in H+M3 and A_F; ABSENT in C+M3
+2026-05-15 00:51:24,965 | INFO |   SU2_H2                Hermitian residual: 0.00e+00  | present in H+M3 and A_F; ABSENT in C+M3
+2026-05-15 00:51:24,965 | INFO |   SU2_H3                Hermitian residual: 0.00e+00  | present in H+M3 and A_F; ABSENT in C+M3
+2026-05-15 00:51:24,965 | INFO |   U3_diag_0             Hermitian residual: 0.00e+00  | present in ALL three plateau algebras
+2026-05-15 00:51:24,965 | INFO |   U3_re_01              Hermitian residual: 0.00e+00  | present in ALL three plateau algebras
+2026-05-15 00:51:24,965 | INFO |   U3_im_01              Hermitian residual: 0.00e+00  | present in ALL three plateau algebras
+2026-05-15 00:51:24,965 | INFO |   U3_re_02              Hermitian residual: 0.00e+00  | present in ALL three plateau algebras
+2026-05-15 00:51:24,965 | INFO |   U3_im_02              Hermitian residual: 0.00e+00  | present in ALL three plateau algebras
+2026-05-15 00:51:24,965 | INFO |   U3_diag_1             Hermitian residual: 0.00e+00  | present in ALL three plateau algebras
+2026-05-15 00:51:24,972 | INFO |   U3_re_12              Hermitian residual: 0.00e+00  | present in ALL three plateau algebras
+2026-05-15 00:51:24,972 | INFO |   U3_im_12              Hermitian residual: 0.00e+00  | present in ALL three plateau algebras
+2026-05-15 00:51:24,972 | INFO |   U3_diag_2             Hermitian residual: 0.00e+00  | present in ALL three plateau algebras
+2026-05-15 00:51:24,972 | INFO | 
+2026-05-15 00:51:24,972 | INFO | ======================================================================
+2026-05-15 00:51:24,972 | INFO | STEP 3: Adjoint representation of u(A) on D(A)
+2026-05-15 00:51:24,972 | INFO | Compute 16x16 weight matrices for each generator
+2026-05-15 00:51:24,972 | INFO | ======================================================================
+2026-05-15 00:51:24,972 | INFO | 
+  Algebra: C + M3
+2026-05-15 00:51:24,988 | INFO |     gen=U1_C                  symmetry_res=1.21e-16  eigenvalues=[0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0.]
+2026-05-15 00:51:24,991 | INFO |     gen=U3_diag_0             symmetry_res=4.72e-31  eigenvalues=[0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0.]
+2026-05-15 00:51:25,009 | INFO |     gen=U3_re_01              symmetry_res=4.93e-31  eigenvalues=[0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0.]
+2026-05-15 00:51:25,027 | INFO |     gen=U3_im_01              symmetry_res=5.76e-31  eigenvalues=[0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0.]
+2026-05-15 00:51:25,046 | INFO |     gen=U3_re_02              symmetry_res=4.28e-31  eigenvalues=[0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0.]
+2026-05-15 00:51:25,056 | INFO |     gen=U3_im_02              symmetry_res=4.05e-31  eigenvalues=[0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0.]
+2026-05-15 00:51:25,067 | INFO |     gen=U3_diag_1             symmetry_res=4.83e-31  eigenvalues=[0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0.]
+2026-05-15 00:51:25,082 | INFO |     gen=U3_re_12              symmetry_res=3.57e-31  eigenvalues=[0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0.]
+2026-05-15 00:51:25,094 | INFO |     gen=U3_im_12              symmetry_res=4.68e-31  eigenvalues=[0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0.]
+2026-05-15 00:51:25,112 | INFO |     gen=U3_diag_2             symmetry_res=5.42e-31  eigenvalues=[0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0.]
+2026-05-15 00:51:25,112 | INFO | 
+  Algebra: H + M3
+2026-05-15 00:51:25,126 | INFO |     gen=SU2_H1                symmetry_res=4.77e-17  eigenvalues=[0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0.]
+2026-05-15 00:51:25,142 | INFO |     gen=SU2_H2                symmetry_res=4.86e-17  eigenvalues=[0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0.]
+2026-05-15 00:51:25,150 | INFO |     gen=SU2_H3                symmetry_res=4.21e-17  eigenvalues=[0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0.]
+2026-05-15 00:51:25,164 | INFO |     gen=U3_diag_0             symmetry_res=4.64e-31  eigenvalues=[0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0.]
+2026-05-15 00:51:25,175 | INFO |     gen=U3_re_01              symmetry_res=4.70e-31  eigenvalues=[0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0.]
+2026-05-15 00:51:25,189 | INFO |     gen=U3_im_01              symmetry_res=4.16e-31  eigenvalues=[0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0.]
+2026-05-15 00:51:25,197 | INFO |     gen=U3_re_02              symmetry_res=5.30e-31  eigenvalues=[0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0.]
+2026-05-15 00:51:25,214 | INFO |     gen=U3_im_02              symmetry_res=5.30e-31  eigenvalues=[0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0.]
+2026-05-15 00:51:25,275 | INFO |     gen=U3_diag_1             symmetry_res=3.86e-31  eigenvalues=[0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0.]
+2026-05-15 00:51:25,413 | INFO |     gen=U3_re_12              symmetry_res=5.62e-31  eigenvalues=[0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0.]
+2026-05-15 00:51:25,540 | INFO |     gen=U3_im_12              symmetry_res=7.04e-31  eigenvalues=[0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0.]
+2026-05-15 00:51:25,570 | INFO |     gen=U3_diag_2             symmetry_res=5.31e-31  eigenvalues=[0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0.]
+2026-05-15 00:51:25,570 | INFO | 
+  Algebra: A_F
+2026-05-15 00:51:25,583 | INFO |     gen=U1_C                  symmetry_res=1.25e-16  eigenvalues=[0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0.]
+2026-05-15 00:51:25,595 | INFO |     gen=SU2_H1                symmetry_res=6.02e-17  eigenvalues=[0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0.]
+2026-05-15 00:51:25,608 | INFO |     gen=SU2_H2                symmetry_res=8.86e-17  eigenvalues=[0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0.]
+2026-05-15 00:51:25,620 | INFO |     gen=SU2_H3                symmetry_res=4.50e-17  eigenvalues=[0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0.]
+2026-05-15 00:51:25,631 | INFO |     gen=U3_diag_0             symmetry_res=5.56e-31  eigenvalues=[0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0.]
+2026-05-15 00:51:25,758 | INFO |     gen=U3_re_01              symmetry_res=6.53e-31  eigenvalues=[0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0.]
+2026-05-15 00:51:25,910 | INFO |     gen=U3_im_01              symmetry_res=7.28e-31  eigenvalues=[0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0.]
+2026-05-15 00:51:26,000 | INFO |     gen=U3_re_02              symmetry_res=5.51e-31  eigenvalues=[0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0.]
+2026-05-15 00:51:26,015 | INFO |     gen=U3_im_02              symmetry_res=6.22e-31  eigenvalues=[0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0.]
+2026-05-15 00:51:26,023 | INFO |     gen=U3_diag_1             symmetry_res=5.31e-31  eigenvalues=[0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0.]
+2026-05-15 00:51:26,039 | INFO |     gen=U3_re_12              symmetry_res=6.09e-31  eigenvalues=[0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0.]
+2026-05-15 00:51:26,041 | INFO |     gen=U3_im_12              symmetry_res=5.38e-31  eigenvalues=[0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0.]
+2026-05-15 00:51:26,058 | INFO |     gen=U3_diag_2             symmetry_res=6.56e-31  eigenvalues=[0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0.]
+2026-05-15 00:51:26,058 | INFO | 
+2026-05-15 00:51:26,058 | INFO | ======================================================================
+2026-05-15 00:51:26,058 | INFO | STEP 4: Hypercharge structure — U(1) generator on each algebra
+2026-05-15 00:51:26,058 | INFO | This is the DISCRIMINATING functional for the plateau
+2026-05-15 00:51:26,058 | INFO | ======================================================================
+2026-05-15 00:51:26,058 | INFO | 
+2026-05-15 00:51:26,058 | INFO | --- U(1) from C: acts on A_F and C+M3, ABSENT from H+M3 ---
+2026-05-15 00:51:26,058 | INFO | 
+2026-05-15 00:51:26,058 | INFO |   Algebra: C + M3
+2026-05-15 00:51:26,058 | INFO |     Eigenvalue spectrum of Ad_{U1} on D(C + M3):
+2026-05-15 00:51:26,058 | INFO |       eigenvalue = +0.0000   multiplicity = 16
+2026-05-15 00:51:26,058 | INFO | 
+2026-05-15 00:51:26,058 | INFO |     Physical Yukawa directions decomposed by U(1) charge:
+2026-05-15 00:51:26,058 | INFO |     Yukawa direction                                  U1 charge    purity
+2026-05-15 00:51:26,058 | INFO |     quark  Lu->Ru (re)                             +0.0000     0.4655
+2026-05-15 00:51:26,067 | INFO |     quark  Lu->Ru (im)                             -0.0000     0.1999
+2026-05-15 00:51:26,067 | INFO |     quark  Lu->Rd (re)                             +0.0000     0.5801
+2026-05-15 00:51:26,067 | INFO |     quark  Lu->Rd (im)                             -0.0000     0.3216
+2026-05-15 00:51:26,067 | INFO |     quark  Ld->Ru (re)                             +0.0000     0.3510
+2026-05-15 00:51:26,067 | INFO |     quark  Ld->Ru (im)                             -0.0000     0.4443
+2026-05-15 00:51:26,069 | INFO |     quark  Ld->Rd (re)                             -0.0000     0.2212
+2026-05-15 00:51:26,069 | INFO |     quark  Ld->Rd (im)                             -0.0000     0.3613
+2026-05-15 00:51:26,069 | INFO |     lepton Lu->Ru (re)                             +0.0000     0.6498
+2026-05-15 00:51:26,070 | INFO |     lepton Lu->Ru (im)                             -0.0000     0.3798
+2026-05-15 00:51:26,070 | INFO |     lepton Lu->Rd (re)                             -0.0000     0.8796
+2026-05-15 00:51:26,070 | INFO |     lepton Lu->Rd (im)                             +0.0000     0.6315
+2026-05-15 00:51:26,071 | INFO |     lepton Ld->Ru (re)                             -0.0000     0.3397
+2026-05-15 00:51:26,071 | INFO |     lepton Ld->Ru (im)                             -0.0000     0.6073
+2026-05-15 00:51:26,071 | INFO |     lepton Ld->Rd (re)                             +0.0000     0.5783
+2026-05-15 00:51:26,072 | INFO |     lepton Ld->Rd (im)                             +0.0000     0.9745
+2026-05-15 00:51:26,072 | INFO | 
+2026-05-15 00:51:26,072 | INFO |   Algebra: H + M3
+2026-05-15 00:51:26,072 | INFO |     U(1)_C not in this algebra's gauge group.
+2026-05-15 00:51:26,072 | INFO |     => HYPERCHARGE ASSIGNMENTS UNDEFINED for this algebra.
+2026-05-15 00:51:26,072 | INFO |     => Cannot reproduce Y(u_R) != Y(d_R) distinction.
+2026-05-15 00:51:26,072 | INFO | 
+2026-05-15 00:51:26,072 | INFO |   Algebra: A_F
+2026-05-15 00:51:26,073 | INFO |     Eigenvalue spectrum of Ad_{U1} on D(A_F):
+2026-05-15 00:51:26,073 | INFO |       eigenvalue = +0.0000   multiplicity = 16
+2026-05-15 00:51:26,073 | INFO | 
+2026-05-15 00:51:26,073 | INFO |     Physical Yukawa directions decomposed by U(1) charge:
+2026-05-15 00:51:26,073 | INFO |     Yukawa direction                                  U1 charge    purity
+2026-05-15 00:51:26,074 | INFO |     quark  Lu->Ru (re)                             +0.0000     0.4659
+2026-05-15 00:51:26,074 | INFO |     quark  Lu->Ru (im)                             -0.0000     0.2836
+2026-05-15 00:51:26,075 | INFO |     quark  Lu->Rd (re)                             +0.0000     0.5865
+2026-05-15 00:51:26,075 | INFO |     quark  Lu->Rd (im)                             -0.0000     0.4425
+2026-05-15 00:51:26,075 | INFO |     quark  Ld->Ru (re)                             -0.0000     0.2720
+2026-05-15 00:51:26,075 | INFO |     quark  Ld->Ru (im)                             -0.0000     0.3042
+2026-05-15 00:51:26,075 | INFO |     quark  Ld->Rd (re)                             -0.0000     0.4452
+2026-05-15 00:51:26,075 | INFO |     quark  Ld->Rd (im)                             -0.0000     0.3807
+2026-05-15 00:51:26,075 | INFO |     lepton Lu->Ru (re)                             +0.0000     0.6731
+2026-05-15 00:51:26,075 | INFO |     lepton Lu->Ru (im)                             -0.0000     0.3734
+2026-05-15 00:51:26,075 | INFO |     lepton Lu->Rd (re)                             -0.0000     0.8624
+2026-05-15 00:51:26,075 | INFO |     lepton Lu->Rd (im)                             +0.0000     0.4164
+2026-05-15 00:51:26,075 | INFO |     lepton Ld->Ru (re)                             -0.0000     0.2149
+2026-05-15 00:51:26,080 | INFO |     lepton Ld->Ru (im)                             -0.0000     0.4823
+2026-05-15 00:51:26,080 | INFO |     lepton Ld->Rd (re)                             +0.0000     0.5987
+2026-05-15 00:51:26,080 | INFO |     lepton Ld->Rd (im)                             +0.0000     0.9546
+2026-05-15 00:51:26,081 | INFO | 
+2026-05-15 00:51:26,081 | INFO | ======================================================================
+2026-05-15 00:51:26,081 | INFO | STEP 5: SU(2) isospin structure — H generators on each algebra
+2026-05-15 00:51:26,081 | INFO | ======================================================================
+2026-05-15 00:51:26,081 | INFO | 
+2026-05-15 00:51:26,081 | INFO | --- SU(2) sigma_3/2: isospin quantum numbers ---
+2026-05-15 00:51:26,081 | INFO |   Algebra: C + M3
+2026-05-15 00:51:26,082 | INFO |     SU(2) not in this algebra's gauge group.
+2026-05-15 00:51:26,082 | INFO |     => NO WEAK ISOSPIN STRUCTURE. No W bosons.
+2026-05-15 00:51:26,082 | INFO | 
+2026-05-15 00:51:26,082 | INFO |   Algebra: H + M3
+2026-05-15 00:51:26,083 | INFO |     Eigenvalue spectrum of Ad_{SU2_H3} on D(H + M3):
+2026-05-15 00:51:26,083 | INFO |       T_3 eigenvalue = +0.0000   multiplicity = 16
+2026-05-15 00:51:26,083 | INFO | 
+2026-05-15 00:51:26,083 | INFO |   Algebra: A_F
+2026-05-15 00:51:26,083 | INFO |     Eigenvalue spectrum of Ad_{SU2_H3} on D(A_F):
+2026-05-15 00:51:26,083 | INFO |       T_3 eigenvalue = +0.0000   multiplicity = 16
+2026-05-15 00:51:26,083 | INFO | 
+2026-05-15 00:51:26,083 | INFO | ======================================================================
+2026-05-15 00:51:26,084 | INFO | STEP 6: Full gauge fingerprint — weight vectors (U1, T3, Y_color)
+2026-05-15 00:51:26,084 | INFO | For A_F: should reproduce SM quantum numbers exactly
+2026-05-15 00:51:26,084 | INFO | ======================================================================
+2026-05-15 00:51:26,084 | INFO | 
+2026-05-15 00:51:26,084 | INFO | === A_F GAUGE FINGERPRINT (the SM algebra) ===
+2026-05-15 00:51:26,084 | INFO |   [Ad_U1, Ad_T3] on D(A_F): max |entry| = 1.28e-31
+2026-05-15 00:51:26,084 | INFO |   [Ad_U1, Ad_Y]  on D(A_F): max |entry| = 3.59e-45
+2026-05-15 00:51:26,085 | INFO | 
+2026-05-15 00:51:26,085 | INFO |   Yukawa direction                                  Q_U1       T3    Y_color
+2026-05-15 00:51:26,085 | INFO |   --------------------------------------------------------------------------------
+2026-05-15 00:51:26,085 | INFO |   quark  Lu->Ru (re)                             +0.0000  -0.0000  -0.000000
+2026-05-15 00:51:26,086 | INFO |   quark  Lu->Ru (im)                             -0.0000  +0.0000  +0.000000
+2026-05-15 00:51:26,086 | INFO |   quark  Lu->Rd (re)                             +0.0000  +0.0000  +0.000000
+2026-05-15 00:51:26,087 | INFO |   quark  Lu->Rd (im)                             -0.0000  -0.0000  -0.000000
+2026-05-15 00:51:26,087 | INFO |   quark  Ld->Ru (re)                             -0.0000  -0.0000  +0.000000
+2026-05-15 00:51:26,087 | INFO |   quark  Ld->Ru (im)                             +0.0000  +0.0000  -0.000000
+2026-05-15 00:51:26,087 | INFO |   quark  Ld->Rd (re)                             -0.0000  +0.0000  -0.000000
+2026-05-15 00:51:26,087 | INFO |   quark  Ld->Rd (im)                             -0.0000  +0.0000  +0.000000
+2026-05-15 00:51:26,089 | INFO |   lepton Lu->Ru (re)                             +0.0000  -0.0000  -0.000000
+2026-05-15 00:51:26,089 | INFO |   lepton Lu->Ru (im)                             -0.0000  +0.0000  +0.000000
+2026-05-15 00:51:26,090 | INFO |   lepton Lu->Rd (re)                             -0.0000  -0.0000  -0.000000
+2026-05-15 00:51:26,090 | INFO |   lepton Lu->Rd (im)                             +0.0000  +0.0000  +0.000000
+2026-05-15 00:51:26,090 | INFO |   lepton Ld->Ru (re)                             -0.0000  -0.0000  +0.000000
+2026-05-15 00:51:26,091 | INFO |   lepton Ld->Ru (im)                             -0.0000  -0.0000  +0.000000
+2026-05-15 00:51:26,091 | INFO |   lepton Ld->Rd (re)                             +0.0000  -0.0000  -0.000000
+2026-05-15 00:51:26,091 | INFO |   lepton Ld->Rd (im)                             +0.0000  -0.0000  -0.000000
+2026-05-15 00:51:26,092 | INFO | 
+2026-05-15 00:51:26,092 | INFO | ======================================================================
+2026-05-15 00:51:26,092 | INFO | STEP 7: F_gauge(A) — the discriminating functional
+2026-05-15 00:51:26,092 | INFO | F_gauge(A) = Tr(sum_i G_adj_i^2)  summed over generators of u(A)
+2026-05-15 00:51:26,092 | INFO | This measures how richly U(A) acts on D(A)
+2026-05-15 00:51:26,092 | INFO | ======================================================================
+2026-05-15 00:51:26,093 | INFO | 
+2026-05-15 00:51:26,093 | INFO |   C + M3:
+2026-05-15 00:51:26,093 | INFO |     F_gauge = 0.000000
+2026-05-15 00:51:26,093 | INFO |     Breakdown: U(1)=0.0000  SU(2)=0.0000  U(3)=0.0000
+2026-05-15 00:51:26,093 | INFO | 
+2026-05-15 00:51:26,093 | INFO |   H + M3:
+2026-05-15 00:51:26,093 | INFO |     F_gauge = 0.000000
+2026-05-15 00:51:26,093 | INFO |     Breakdown: U(1)=0.0000  SU(2)=0.0000  U(3)=0.0000
+2026-05-15 00:51:26,093 | INFO | 
+2026-05-15 00:51:26,093 | INFO |   A_F:
+2026-05-15 00:51:26,093 | INFO |     F_gauge = 0.000000
+2026-05-15 00:51:26,093 | INFO |     Breakdown: U(1)=0.0000  SU(2)=0.0000  U(3)=0.0000
+2026-05-15 00:51:26,093 | INFO | 
+2026-05-15 00:51:26,093 | INFO | ======================================================================
+2026-05-15 00:51:26,093 | INFO | STEP 8: DISCRIMINATION — does F_gauge break the plateau?
+2026-05-15 00:51:26,093 | INFO | ======================================================================
+2026-05-15 00:51:26,093 | INFO | 
+2026-05-15 00:51:26,093 | INFO |   F_gauge values:
+2026-05-15 00:51:26,097 | INFO |     A_F                   F_gauge = 0.000000 <-- MAXIMUM
+2026-05-15 00:51:26,097 | INFO |     C + M3                F_gauge = 0.000000
+2026-05-15 00:51:26,099 | INFO |     H + M3                F_gauge = 0.000000
+2026-05-15 00:51:26,099 | INFO | 
+2026-05-15 00:51:26,099 | INFO |   RESULT: A_F achieves the maximum F_gauge.
+2026-05-15 00:51:26,099 | INFO |   Some algebras may tie — see breakdown for details.
+2026-05-15 00:51:26,099 | INFO | 
+2026-05-15 00:51:26,099 | INFO | ======================================================================
+2026-05-15 00:51:26,099 | INFO | STEP 9: Hypercharge asymmetry functional F_Y
+2026-05-15 00:51:26,099 | INFO | F_Y(A) = Var(U1 charges on D(A)) — measures Y(u_R) != Y(d_R)
+2026-05-15 00:51:26,099 | INFO | Only A_F has C summand giving lambda vs lambda* on u_R vs d_R
+2026-05-15 00:51:26,099 | INFO | ======================================================================
+2026-05-15 00:51:26,099 | INFO | 
+2026-05-15 00:51:26,099 | INFO |   C + M3         : U(1) eig variance = 0.000000,  spread = 0.000000
+2026-05-15 00:51:26,101 | INFO |   H + M3         : U(1)_C absent -> F_Y = 0.0 (no hypercharge)
+2026-05-15 00:51:26,101 | INFO |   A_F            : U(1) eig variance = 0.000000,  spread = 0.000000
+2026-05-15 00:51:26,101 | INFO | 
+2026-05-15 00:51:26,101 | INFO |   F_Y interpretation:
+2026-05-15 00:51:26,101 | INFO |   - Zero variance => all Yukawa couplings carry same U(1) charge
+2026-05-15 00:51:26,101 | INFO |   - Nonzero variance => U(1) distinguishes different Yukawa types
+2026-05-15 00:51:26,101 | INFO |   - ONLY A_F has lambda vs lambda* -> Y(u_R) != Y(d_R)
+2026-05-15 00:51:26,101 | INFO | 
+2026-05-15 00:51:26,101 | INFO | ======================================================================
+2026-05-15 00:51:26,101 | INFO | STEP 10: Two-condition characterization from companion paper
+2026-05-15 00:51:26,101 | INFO | Condition (i):  dim D(A) >= 16
+2026-05-15 00:51:26,103 | INFO | Condition (ii): U(A) contains SU(2)_L AND U(1) with Y(u_R)!=Y(d_R)
+2026-05-15 00:51:26,103 | INFO | ======================================================================
+2026-05-15 00:51:26,103 | INFO | 
+2026-05-15 00:51:26,103 | INFO |   Algebra                dim D   has SU2   has U1_C    Y asymm   satisfies both
+2026-05-15 00:51:26,103 | INFO |   ---------------------------------------------------------------------------
+2026-05-15 00:51:26,105 | INFO |   C + M3                    16     False       True      False            False
+2026-05-15 00:51:26,105 | INFO |   H + M3                    16      True      False      False            False
+2026-05-15 00:51:26,105 | INFO |   A_F                       16      True       True      False            False
+2026-05-15 00:51:26,105 | INFO | 
+2026-05-15 00:51:26,105 | INFO | CONCLUSION:
+2026-05-15 00:51:26,105 | INFO |   The two-condition characterization uniquely identifies A_F.
+2026-05-15 00:51:26,105 | INFO |   No subalgebra in the plateau satisfies both conditions simultaneously.
+2026-05-15 00:51:26,107 | INFO |   This is the computational verification of the companion paper,
+2026-05-15 00:51:26,107 | INFO |   Observation 7 (strange_idea_continued.tex).
+2026-05-15 00:51:26,107 | INFO | 
+2026-05-15 00:51:26,107 | INFO | ======================================================================
+2026-05-15 00:51:26,107 | INFO | NUMERICAL RECEIPTS
+2026-05-15 00:51:26,108 | INFO | ======================================================================
+2026-05-15 00:51:26,108 | INFO | 
+2026-05-15 00:51:26,108 | INFO |   Subspace equality check (Phase 5 confirmation):
+2026-05-15 00:51:26,111 | INFO |   D(C+M3) == D(A_F)?  projection residual = 7.41e-15
+2026-05-15 00:51:26,111 | INFO |   D(H+M3) == D(A_F)?  projection residual = 7.01e-15
+2026-05-15 00:51:26,111 | INFO | 
+2026-05-15 00:51:26,111 | INFO |   Adjoint matrix symmetry (all should be ~0):
+2026-05-15 00:51:26,113 | INFO | 
+2026-05-15 00:51:26,113 | INFO | ======================================================================
+2026-05-15 00:51:26,113 | INFO | PHASE 7 COMPLETE
+2026-05-15 00:51:26,113 | INFO | Receipt file: phase7_gauge_content.log
+2026-05-15 00:51:26,113 | INFO | ======================================================================
