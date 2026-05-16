@@ -14,7 +14,7 @@
 
 ---
 
-## 👇 Open this first. Seriously.
+## 👇 Open to reveal the hidden secrets.
 
 ### **[🔴 The Dodecahedron of Open Questions — Live Interactive](https://vsavytsk1.github.io/SpookyPrimes/)**
 
