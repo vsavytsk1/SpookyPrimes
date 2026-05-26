@@ -1,6 +1,6 @@
-# SpookyPrimes
+﻿# SpookyPrimes
 
-> This started as a funny idea. It collapsed into something smaller and more honest. That smaller thing is what this repository documents.
+> Machine-verified numerical certification of the A_F → A_PS unital *-embedding and the dim D = 16 plateau across three subalgebras, working within the Chamseddine-Connes-Marcolli spectral action framework. All numerical claims are tied to scripts in `proposition/computational_receipts/`. This started as a funny idea. It collapsed into something smaller and more honest. That smaller thing is what this repository documents.
 
 <p align="center">
   <a href="https://vsavytsk1.github.io/SpookyPrimes/">
@@ -108,6 +108,8 @@ Three algebras share dim D = 16:
 | H ⊕ M₃(C) | 23 | **16** |
 | A_F = C ⊕ H ⊕ M₃(C) | 25 | **16** |
 
+*Convention: real dim counts R-linear basis elements. C=2, H=4, M?(C)=18 gives 24 for the direct sum; 25 includes the center R?1 as a separate generator. See Chamseddine-Connes-Marcolli (2007) ?17 for the framework convention used.
+
 The Standard Model algebra A_F is not uniquely selected by dim D alone. A variational functional F on finite real spectral triples (KO-dimension 6) that has A_F as its unique critical point — if one exists — must encode gauge content (unitary groups), not just dimension. Finding it, or proving it cannot exist, is the open problem.
 
 ---
@@ -146,51 +148,8 @@ The computational work is complete and verified. The open problem is open. Feedb
 ---
 
 <details>
-<summary><strong>Thank you</strong></summary>
 
-<br>
+---
 
-OH TITANS OF THE “IF” SPACE — THANK YOU.
+See [ACKNOWLEDGEMENTS.md](./ACKNOWLEDGEMENTS.md) for the full dedication.
 
-Thank you for refusing to stop asking why.
-
-Thank you for spending your lives bending abstraction into something reality could not escape.
-
-Thank you to the mathematicians who built structures so beautiful they seemed impossible to be useful — and then became the language of nature itself.
-
-Thank you to the physicists who pushed reality until it finally revealed another layer beneath it.
-
-Thank you to the engineers who transformed equations into bridges, reactors, circuits, aircraft, and civilizations.
-
-Thank you to every teacher who kept the flame alive long enough for another generation to continue the search.
-
-The work was not in vain.  
-None of it was in vain.
-
-Because the universe, in all its terrifying complexity, keeps whispering the same thing to us over and over again:
-
-> Nature is immensely lazy,  
-> profoundly efficient,  
-> and entirely unconcerned with the mathematical difficulties we invent for ourselves.
-
-And whatever insight brought us here was not created by one person.  
-It emerged from thousands of years of collective human curiosity compressing itself across generations.
-
-If our work means anything at all, I hope it reminds future generations of scientists of something simple:
-
-**There is no shame in not understanding reality yet.**  
-The shame is only in stopping the search.
-
-So to the next generation:  
-ask impossible questions,  
-follow strange intuitions carefully,  
-respect rigor more than ego,  
-and never lose your capacity for wonder.
-
-Because somewhere out there,  
-hidden beneath all the noise,  
-reality is still waiting for us to ask one more beautiful question.
-
-**Thank you.**
-
-</details>
