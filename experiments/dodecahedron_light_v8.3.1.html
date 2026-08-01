@@ -1,0 +1,1704 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>The Dodecahedron of Open Questions</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<!--
+   THE DODECAHEDRON OF OPEN QUESTIONS  --  GENESIS v8.3.1 (light-spectrum rung)
+
+   v8.3 arc (Path X, each rung frozen): animate the net's LINES with the LIGHT
+   MATRIX as the path to hearing how the net SOUNDS. v8.3.1 adds the honest
+   bridge -- the graph-Laplacian spectrum L=3I-A (the net's true discrete Fourier
+   basis) computed live, PROVEN to match the kernel (lambda_2 = 3-sqrt5 = 2/phi^2,
+   twice M_light's contracting eigenvalue), plus a LIGHT button that freezes the
+   organic motion and vibrates the net in its fundamental normal mode.
+   Kernel: experiments/dodeca_light_kernel.py (proof by kernel).
+
+   Each pentagonal face is an unresolved question in modern physics,
+   organized around the open Step-4 closure problem in the
+   Connes–Chamseddine spectral action program: which functional has
+   the Standard Model finite spectral triple as its unique critical
+   point? The central glowing presence — the Generator — is the
+   visual stand-in for that hypothetical functional. It reaches
+   toward every structural element through 20 tendrils, breathes,
+   attempts to collapse the structure to a single algebra, and
+   never succeeds in closing the surface. The visual signature of
+   the open problem is built into the geometry.
+
+   Architecture: one HTML file, no build step, no dependencies
+   beyond a single Three.js module from cdnjs. Suitable for static
+   hosting on GitHub Pages. Code is organized into a handful of
+   small modules under one App; each module is independently
+   readable. Behavior is fully deterministic given slider state.
+-->
+<style>
+  :root {
+    --bg: #0d1014;
+    --bg-2: #14181f;
+    --ink: #e6e2d8;
+    --ink-dim: #8a8479;
+    --rule: #2a2f38;
+    --atom: #8a7bb5;
+    --atom-hi: #b3a3dd;
+    --pent: #c14a3b;
+    --pent-hi: #e86753;
+    --edge: #3a3f48;
+    --accent: #d4b896;
+    --gen: #9ed3ff;
+    --gen-glow: #4a9eff;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body {
+    height: 100%; width: 100%; overflow: hidden;
+    background: var(--bg); color: var(--ink);
+    font-family: 'EB Garamond', Georgia, serif;
+    font-feature-settings: "liga", "kern";
+    -webkit-tap-highlight-color: transparent;
+    -webkit-user-select: none; user-select: none;
+    overscroll-behavior: none;
+  }
+  #stage { position: fixed; inset: 0; }
+  canvas { display: block; cursor: grab; touch-action: none; }
+  canvas:active { cursor: grabbing; }
+
+  /* Title block, top-left */
+  .title {
+    position: fixed; top: 28px; left: 32px; max-width: 480px;
+    z-index: 10; pointer-events: none;
+    opacity: 0; animation: fadein 1.6s 0.3s forwards;
+  }
+  .title h1 {
+    font-family: 'EB Garamond', serif;
+    font-weight: 500; font-style: italic;
+    font-size: 28px; line-height: 1.15;
+    letter-spacing: 0.01em; color: var(--ink);
+    margin-bottom: 6px;
+  }
+  .title p {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px; line-height: 1.5;
+    color: var(--ink-dim); letter-spacing: 0.02em;
+  }
+
+  /* Bottom-center interaction hint */
+  .hint {
+    position: fixed; bottom: 24px; left: 50%;
+    transform: translateX(-50%);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px; letter-spacing: 0.08em;
+    color: var(--ink-dim); text-transform: uppercase;
+    z-index: 10; pointer-events: none;
+    opacity: 0; animation: fadein 2s 1.2s forwards;
+    white-space: nowrap;
+  }
+  .hint .key { color: var(--accent); }
+
+  /* Top-right pill buttons: Generator toggle, Tune controls */
+  .top-right {
+    position: fixed; top: 28px; right: 32px;
+    z-index: 11;
+    display: flex; gap: 8px;
+    opacity: 0; animation: fadein 1.8s 1.8s forwards;
+  }
+  .pill-btn {
+    background: transparent;
+    border: 1px solid var(--rule);
+    color: var(--ink-dim);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    padding: 9px 14px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+  .pill-btn:hover {
+    color: var(--ink);
+    border-color: var(--ink-dim);
+  }
+  .gen-toggle.on {
+    color: var(--gen);
+    border-color: rgba(74, 158, 255, 0.45);
+    box-shadow: 0 0 14px rgba(74, 158, 255, 0.12),
+                inset 0 0 12px rgba(74, 158, 255, 0.05);
+  }
+  .gen-toggle.on:hover {
+    color: var(--gen);
+    border-color: rgba(74, 158, 255, 0.65);
+    box-shadow: 0 0 20px rgba(74, 158, 255, 0.22),
+                inset 0 0 14px rgba(74, 158, 255, 0.08);
+  }
+  .gen-toggle .dot {
+    display: inline-block;
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--ink-dim);
+    margin-right: 8px;
+    vertical-align: middle;
+    transition: background 0.4s, box-shadow 0.4s;
+  }
+  .gen-toggle.on .dot {
+    background: var(--gen);
+    box-shadow: 0 0 6px var(--gen-glow);
+  }
+  .tune-btn.open {
+    color: var(--gen);
+    border-color: rgba(74, 158, 255, 0.45);
+  }
+  /* v8.3.1 -- Light matrix vibration toggle (the net's true sound) */
+  .light-btn.on {
+    color: var(--accent);
+    border-color: rgba(212, 184, 150, 0.5);
+    box-shadow: 0 0 16px rgba(212, 184, 150, 0.14),
+                inset 0 0 12px rgba(212, 184, 150, 0.06);
+  }
+
+  /* Controls popover (sliders) */
+  .controls {
+    position: fixed;
+    top: 76px; right: 32px;
+    width: 320px;
+    background: rgba(13, 16, 20, 0.94);
+    border: 1px solid var(--rule);
+    padding: 20px 22px 18px;
+    z-index: 11;
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    opacity: 0; pointer-events: none;
+    transform: translateY(-8px);
+    transition: opacity 0.3s ease, transform 0.3s ease;
+  }
+  .controls.open { opacity: 1; pointer-events: auto; transform: translateY(0); }
+  .controls .ctrl { margin-bottom: 18px; }
+  .controls .ctrl:last-child { margin-bottom: 0; }
+  .controls .ctrl label {
+    display: flex; justify-content: space-between; align-items: baseline;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px; letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--ink-dim);
+    margin-bottom: 8px;
+  }
+  .controls .ctrl label .vname { color: var(--ink-dim); }
+  .controls .ctrl label .vval {
+    color: var(--gen);
+    font-size: 11px;
+    letter-spacing: 0.05em;
+  }
+  .controls .ctrl .hint-text {
+    font-family: 'EB Garamond', serif;
+    font-style: italic;
+    font-size: 11px;
+    color: var(--ink-dim);
+    margin-top: 6px;
+    line-height: 1.4;
+  }
+  .controls input[type=range] {
+    -webkit-appearance: none; appearance: none;
+    width: 100%; height: 2px;
+    background: var(--rule);
+    outline: none; border-radius: 1px;
+    cursor: pointer;
+  }
+  .controls input[type=range]::-webkit-slider-thumb {
+    -webkit-appearance: none; appearance: none;
+    width: 14px; height: 14px;
+    background: var(--gen);
+    border-radius: 50%;
+    cursor: pointer;
+    box-shadow: 0 0 8px rgba(74, 158, 255, 0.5);
+    transition: transform 0.15s;
+  }
+  .controls input[type=range]::-webkit-slider-thumb:hover { transform: scale(1.15); }
+  .controls input[type=range]::-moz-range-thumb {
+    width: 14px; height: 14px;
+    background: var(--gen);
+    border-radius: 50%; border: none;
+    cursor: pointer;
+    box-shadow: 0 0 8px rgba(74, 158, 255, 0.5);
+  }
+  .controls .reset {
+    display: block; width: 100%;
+    background: transparent;
+    border: 1px solid var(--rule);
+    color: var(--ink-dim);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px; letter-spacing: 0.14em;
+    text-transform: uppercase;
+    padding: 7px 0;
+    margin-top: 18px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .controls .reset:hover {
+    color: var(--ink);
+    border-color: var(--ink-dim);
+  }
+
+  /* Right-side panel that opens when a pentagon is clicked */
+  .panel {
+    position: fixed; top: 0; right: 0; height: 100vh;
+    width: 460px; max-width: 92vw;
+    background: var(--bg-2);
+    border-left: 1px solid var(--rule);
+    padding: 56px 44px 48px;
+    z-index: 20;
+    transform: translateX(100%);
+    transition: transform 0.6s cubic-bezier(0.22, 0.61, 0.36, 1);
+    overflow-y: auto;
+  }
+  .panel.open { transform: translateX(0); }
+  .panel .close {
+    position: absolute; top: 20px; right: 24px;
+    background: none; border: none; color: var(--ink-dim);
+    font-family: 'JetBrains Mono', monospace; font-size: 18px;
+    cursor: pointer; padding: 6px 10px; transition: color 0.2s;
+  }
+  .panel .close:hover { color: var(--ink); }
+  .panel .tag {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px; letter-spacing: 0.18em;
+    color: var(--pent-hi); text-transform: uppercase;
+    margin-bottom: 14px;
+  }
+  .panel h2 {
+    font-family: 'EB Garamond', serif;
+    font-weight: 500; font-style: italic;
+    font-size: 30px; line-height: 1.15;
+    color: var(--ink); margin-bottom: 8px;
+  }
+  .panel .technical {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px; color: var(--ink-dim);
+    margin-bottom: 28px; letter-spacing: 0.02em;
+  }
+  .panel .body { font-size: 16px; line-height: 1.55; color: var(--ink); margin-bottom: 22px; }
+  .panel .rule { height: 1px; background: var(--rule); margin: 24px 0; }
+  .panel .atoms-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px; letter-spacing: 0.18em;
+    color: var(--ink-dim); text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+  .panel .atoms { font-size: 14px; line-height: 1.55; color: var(--ink); }
+  .panel .atoms li {
+    list-style: none; padding: 6px 0;
+    border-bottom: 1px solid var(--rule);
+    font-style: italic;
+  }
+  .panel .atoms li:last-child { border-bottom: none; }
+  .panel .footer { margin-top: 32px; font-size: 13px; line-height: 1.55; color: var(--ink-dim); font-style: italic; }
+
+  @keyframes fadein {
+    from { opacity: 0; transform: translateY(6px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @media (max-width: 720px) {
+    .title { top: 14px; left: 16px; max-width: calc(100vw - 32px); }
+    .title h1 { font-size: 20px; line-height: 1.15; }
+    .title p { font-size: 10px; }
+    .hint {
+      bottom: calc(16px + env(safe-area-inset-bottom));
+      font-size: 9px; padding: 6px 10px;
+      background: rgba(13, 16, 20, 0.7);
+      border: 1px solid var(--rule); border-radius: 14px;
+      backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px);
+    }
+    .top-right { top: 12px; right: 12px; gap: 6px; }
+    .pill-btn { font-size: 9px; padding: 7px 10px; letter-spacing: 0.12em; }
+    .gen-toggle .dot { width: 5px; height: 5px; margin-right: 6px; }
+    .controls {
+      top: auto; right: 12px; left: 12px;
+      bottom: calc(60px + env(safe-area-inset-bottom));
+      width: auto; padding: 16px 18px 14px;
+      max-height: calc(100vh - 140px); overflow-y: auto;
+    }
+    .panel {
+      width: 100vw; height: 100dvh;
+      padding: 56px 22px calc(28px + env(safe-area-inset-bottom));
+    }
+    .panel h2 { font-size: 22px; }
+    .panel .body { font-size: 15px; }
+    .panel .atoms { font-size: 13px; }
+    .panel .close {
+      top: 12px; right: 12px; width: 44px; height: 44px;
+      font-size: 24px; display: flex; align-items: center; justify-content: center;
+      border-radius: 22px; background: rgba(42, 47, 56, 0.5);
+    }
+    .panel .close:hover, .panel .close:active {
+      background: rgba(42, 47, 56, 0.9); color: var(--ink);
+    }
+  }
+  @media (max-width: 380px) {
+    .title h1 { font-size: 18px; }
+    .panel { padding: 56px 18px calc(24px + env(safe-area-inset-bottom)); }
+    .panel h2 { font-size: 20px; }
+  }
+</style>
+</head>
+<body>
+  <div id="stage"></div>
+
+  <div class="title">
+    <h1>The Dodecahedron of Open Questions</h1>
+    <p>12 pentagons · 20 atoms · 30 edges<br>each pentagonal face is an unresolved question in modern physics</p>
+  </div>
+
+  <div class="top-right">
+    <button class="pill-btn gen-toggle on" id="genToggle" aria-label="Toggle Generator">
+      <span class="dot"></span><span class="label">Generator · On</span>
+    </button>
+    <button class="pill-btn light-btn" id="lightToggle" aria-label="Light matrix vibration" title="freeze the organic motion; vibrate the net in its fundamental Laplacian mode (lambda_2 = 3-sqrt5 = 2/phi^2 -- the net's true sound)">
+      <span class="label">&#9835; Light · Off</span>
+    </button>
+    <button class="pill-btn tune-btn" id="tuneToggle" aria-label="Tune controls">Tune</button>
+  </div>
+
+  <div class="controls" id="controls">
+    <div class="ctrl">
+      <label><span class="vname">Generator size</span><span class="vval" id="vSize">1.00×</span></label>
+      <input type="range" id="sSize" min="0" max="2" step="0.05" value="1.0">
+      <div class="hint-text">central core scale and glow intensity</div>
+    </div>
+    <div class="ctrl">
+      <label><span class="vname">Connection hold</span><span class="vval" id="vHold">1.75s</span></label>
+      <input type="range" id="sHold" min="0" max="5.0" step="0.05" value="1.75">
+      <div class="hint-text">how long each tendril stays fully connected · at the extreme, tendrils settle into invisibility</div>
+    </div>
+    <div class="ctrl">
+      <label><span class="vname">Compression amount</span><span class="vval" id="vComp">6.5%</span></label>
+      <input type="range" id="sComp" min="0" max="0.20" step="0.005" value="0.065">
+      <div class="hint-text">how far inward the Generator pulls · at the extreme, the structure dissolves into the void</div>
+    </div>
+    <div class="ctrl">
+      <label><span class="vname">Compression speed</span><span class="vval" id="vSpeed">1.00×</span></label>
+      <input type="range" id="sSpeed" min="0" max="3.0" step="0.05" value="1.0">
+      <div class="hint-text">how fast the structure breathes · zero freezes the breath, three pulses sharply</div>
+    </div>
+    <button class="reset" id="resetBtn">Reset to defaults</button>
+  </div>
+
+  <div class="hint" id="hint">
+    <span class="key">click</span> a red pentagon &nbsp;·&nbsp; <span class="key">drag</span> to rotate &nbsp;·&nbsp; <span class="key">scroll</span> to zoom
+  </div>
+
+  <aside class="panel" id="panel" aria-hidden="true">
+    <button class="close" id="closeBtn" aria-label="Close">×</button>
+    <div class="tag" id="pTag">Open question</div>
+    <h2 id="pTitle">—</h2>
+    <div class="technical" id="pTech">—</div>
+    <div class="body" id="pBody">—</div>
+    <div class="rule"></div>
+    <div class="atoms-label">5 structural elements implicated</div>
+    <ul class="atoms" id="pAtoms"></ul>
+    <div class="footer" id="pFooter">—</div>
+  </aside>
+
+<script type="importmap">
+{
+  "imports": {
+    "three": "https://cdnjs.cloudflare.com/ajax/libs/three.js/0.160.0/three.module.min.js"
+  }
+}
+</script>
+<script type="module">
+import * as THREE from 'three';
+
+// =============================================================
+//  PARAMETERS — physical and visual constants in one place
+// =============================================================
+
+const Palette = {
+  bg:       0x0d1014,
+  atom:     0x8a7bb5,
+  edge:     0x3a3f48,
+  pentagon: 0xc14a3b,
+  generatorCore: 0x9ed3ff,
+  generatorHalo: 0x4a9eff,
+};
+
+// Generator dynamics — angular frequencies and amplitudes
+const Generator = {
+  // The Generator breathes: a slow continuous oscillation in scale
+  // and intensity. Its base angular frequency is multiplied by the
+  // user's "compression speed" slider.
+  breathOmega: 0.55,            // rad/s, default speed
+  // The Generator occasionally surges — a sharp, rare attempt to
+  // collapse the structure. Independent of the speed slider, since
+  // surges are conceptually moments of "the functional really tries."
+  surgeOmega: 0.13,             // rad/s
+  surgeSharpness: 8,            // exponent — higher = sharper peaks
+
+  // Core geometry
+  coreRadius: 0.06,
+  haloShellCount: 4,
+  haloShellBaseRadius: 0.11,
+  haloShellStep: 0.07,
+};
+
+// Tendril lifecycle phases (in seconds). The hold duration is
+// driven by a slider; everything else here is fixed.
+const TendrilCycle = {
+  growSec:  1.5,     // tendril draws from center toward atom
+  decaySec: 1.25,    // tendril dissolves back toward atom side
+  pauseSec: 0.25,    // brief invisible gap before next cycle
+};
+
+const TendrilVisual = {
+  segments: 8,                  // multi-segment line for organic wobble
+  trailFalloff: 4.0,            // higher = sharper bright leading edge
+  leadBoostWidth: 0.08,         // how wide the bright tip is
+  leadBoost: 0.4,               // extra brightness at the tip
+  wobbleAmplitude: 0.04,        // perpendicular wobble in world units
+  focusedBrightness: 1.5,       // multiplier when this tendril is implicated
+  unfocusedDimming: 0.3,        // multiplier when a different pentagon is selected
+};
+
+// "Magic disappearance" thresholds: past these slider values, the
+// affected elements lerp their color toward the background and so
+// vanish into the void. The math keeps running underneath.
+const Magic = {
+  compFadeStart: 0.12,  // 12% compression → structure starts dissolving
+  compFadeEnd:   0.20,  // 20% compression → structure invisible
+  holdFadeStart: 3.5,   // 3.5s hold → tendrils start fading
+  holdFadeEnd:   5.0,   // 5.0s hold → tendrils invisible
+};
+
+const Damping = {
+  // When a pentagon panel is open the reader is reading. We damp
+  // the Generator's intensity so it stays present but doesn't compete
+  // for attention with the prose.
+  readerOpenFactor: 0.35,
+};
+
+const Defaults = {
+  size:  1.0,
+  hold:  1.75,
+  comp:  0.065,
+  speed: 1.0,
+};
+
+// =============================================================
+//  GEOMETRY — the dodecahedron, derived from φ at load time
+// =============================================================
+
+const Geometry = (() => {
+  const phi = (1 + Math.sqrt(5)) / 2;
+  const invPhi = 1 / phi;
+
+  // 20 vertices: 8 cube corners + 12 from the golden-ratio construction
+  const vertices = [];
+  for (const x of [-1, 1]) for (const y of [-1, 1]) for (const z of [-1, 1]) {
+    vertices.push([x, y, z]);
+  }
+  for (const a of [-1, 1]) for (const b of [-1, 1]) {
+    vertices.push([0, a * invPhi, b * phi]);
+    vertices.push([a * invPhi, b * phi, 0]);
+    vertices.push([a * phi, 0, b * invPhi]);
+  }
+
+  const distance = (u, v) => Math.hypot(u[0]-v[0], u[1]-v[1], u[2]-v[2]);
+
+  // 30 edges: pairs of vertices at the minimum distance
+  let minDist = Infinity;
+  for (let i = 0; i < 20; i++) for (let j = i+1; j < 20; j++) {
+    const d = distance(vertices[i], vertices[j]);
+    if (d < minDist) minDist = d;
+  }
+  const edges = [];
+  const adjacency = Array.from({length: 20}, () => []);
+  for (let i = 0; i < 20; i++) for (let j = i+1; j < 20; j++) {
+    if (Math.abs(distance(vertices[i], vertices[j]) - minDist) < 1e-4) {
+      edges.push([i, j]);
+      adjacency[i].push(j);
+      adjacency[j].push(i);
+    }
+  }
+
+  // 12 pentagonal faces: 5-cycles in the adjacency graph that lie in a plane
+  const findAll5Cycles = () => {
+    const found = new Set();
+    const dfs = (path) => {
+      if (path.length === 5) {
+        if (adjacency[path[4]].includes(path[0])) {
+          found.add([...path].sort((a,b) => a-b).join(','));
+        }
+        return;
+      }
+      for (const neighbor of adjacency[path[path.length-1]]) {
+        if (!path.includes(neighbor)) dfs([...path, neighbor]);
+      }
+    };
+    for (let start = 0; start < 20; start++) dfs([start]);
+    return [...found].map(s => s.split(',').map(Number));
+  };
+
+  const isCoplanar = (indices) => {
+    const points = indices.map(i => vertices[i]);
+    const p0 = points[0];
+    const v1 = points[1].map((c, k) => c - p0[k]);
+    const v2 = points[2].map((c, k) => c - p0[k]);
+    const normal = [
+      v1[1]*v2[2] - v1[2]*v2[1],
+      v1[2]*v2[0] - v1[0]*v2[2],
+      v1[0]*v2[1] - v1[1]*v2[0],
+    ];
+    const mag = Math.hypot(...normal);
+    if (mag < 1e-8) return false;
+    const n = normal.map(x => x / mag);
+    for (const p of points.slice(3)) {
+      const d = n[0]*(p[0]-p0[0]) + n[1]*(p[1]-p0[1]) + n[2]*(p[2]-p0[2]);
+      if (Math.abs(d) > 1e-3) return false;
+    }
+    return true;
+  };
+
+  // Order vertex indices around a pentagon so consecutive entries are adjacent
+  const orderPentagonCycle = (indices) => {
+    const set = new Set(indices);
+    const ordered = [indices[0]];
+    let prev = null;
+    while (ordered.length < 5) {
+      for (const neighbor of adjacency[ordered[ordered.length-1]]) {
+        if (set.has(neighbor) && neighbor !== prev) {
+          prev = ordered[ordered.length-1];
+          ordered.push(neighbor);
+          break;
+        }
+      }
+    }
+    return ordered;
+  };
+
+  const pentagons = findAll5Cycles()
+    .filter(isCoplanar)
+    .map(orderPentagonCycle);
+
+  // Per-pentagon centroid direction (used for back-face culling at click time)
+  const pentagonNormals = pentagons.map(pent => {
+    const c = [0, 0, 0];
+    for (const i of pent) { c[0] += vertices[i][0]; c[1] += vertices[i][1]; c[2] += vertices[i][2]; }
+    c[0] /= 5; c[1] /= 5; c[2] /= 5;
+    const mag = Math.hypot(...c);
+    return [c[0]/mag, c[1]/mag, c[2]/mag];
+  });
+
+  return { vertices, edges, pentagons, pentagonNormals };
+})();
+
+// =============================================================
+//  LIGHT SPECTRUM — the honest bridge to M_light (GENESIS v8.3).
+//
+//  Vlad's idea: animate the LINES using the light matrix, as the path
+//  to hearing how the net SOUNDS. The honest math (Thea status grammar,
+//  fake NEVER): M_light acts on shell-data (k^2,kl,l^2,P), NOT on 3D
+//  points. The net's TRUE sound is its GRAPH-LAPLACIAN spectrum
+//  L = 3I - A (cubic graph). Eigenvectors = standing-wave modes (the
+//  honest discrete Fourier basis on the net); eigenvalues = tone^2.
+//
+//  GOLDEN THREAD, proven by kernel (experiments/dodeca_light_kernel.py)
+//  and REPROVED live below: the Fiedler value is EXACTLY
+//     lambda_2 = 3 - sqrt(5) = 2 * phi^-2 = 0.7639320225...
+//  = twice M_light's contracting eigenvalue phi^-2, and top mode
+//     lambda_max = 3 + sqrt(5) = 2 * phi^2 = twice its growth mode.
+//  This value is in Thea's certificate (stability-line-D, row 0).
+// =============================================================
+
+const LightSpectrum = (() => {
+  const n = Geometry.vertices.length;      // 20
+  const PHI = (1 + Math.sqrt(5)) / 2;
+
+  // Laplacian L = 3I - A (every vertex degree 3), from the SAME edges.
+  const L = Array.from({ length: n }, () => new Float64Array(n));
+  for (let i = 0; i < n; i++) L[i][i] = 3;
+  for (const [a, b] of Geometry.edges) { L[a][b] -= 1; L[b][a] -= 1; }
+
+  // Classic cyclic Jacobi eigensolver for a small symmetric matrix.
+  // Returns { values:[n], vectors:[n][n] } with vectors[k] = k-th eigenvector.
+  function jacobiEigen(M) {
+    const a = M.map(row => Float64Array.from(row));
+    const V = Array.from({ length: n }, (_, i) => {
+      const e = new Float64Array(n); e[i] = 1; return e;
+    });
+    for (let sweep = 0; sweep < 100; sweep++) {
+      let off = 0;
+      for (let p = 0; p < n; p++) for (let q = p + 1; q < n; q++) off += a[p][q] * a[p][q];
+      if (off < 1e-24) break;
+      for (let p = 0; p < n; p++) for (let q = p + 1; q < n; q++) {
+        if (Math.abs(a[p][q]) < 1e-18) continue;
+        const theta = (a[q][q] - a[p][p]) / (2 * a[p][q]);
+        const t = Math.sign(theta || 1) / (Math.abs(theta) + Math.sqrt(theta * theta + 1));
+        const c = 1 / Math.sqrt(t * t + 1), s = t * c;
+        for (let k = 0; k < n; k++) {
+          const akp = a[k][p], akq = a[k][q];
+          a[k][p] = c * akp - s * akq;
+          a[k][q] = s * akp + c * akq;
+        }
+        for (let k = 0; k < n; k++) {
+          const apk = a[p][k], aqk = a[q][k];
+          a[p][k] = c * apk - s * aqk;
+          a[q][k] = s * apk + c * aqk;
+        }
+        for (let k = 0; k < n; k++) {
+          const vkp = V[k][p], vkq = V[k][q];
+          V[k][p] = c * vkp - s * vkq;
+          V[k][q] = s * vkp + c * vkq;
+        }
+      }
+    }
+    const idx = Array.from({ length: n }, (_, i) => i).sort((i, j) => a[i][i] - a[j][j]);
+    const values = idx.map(i => a[i][i]);
+    const vectors = idx.map(i => Float64Array.from({ length: n }, (_, k) => V[k][i]));
+    return { values, vectors };
+  }
+
+  const { values, vectors } = jacobiEigen(L);
+
+  // PROOF BY KERNEL, live: lambda_2 must equal 3 - sqrt(5) to float tol.
+  const lambda2Exact = 3 - Math.sqrt(5);
+  const lambda2Live = values[1];
+  const verified = Math.abs(lambda2Live - lambda2Exact) < 1e-9;
+  console.log('%c[v8.3 LIGHT SPECTRUM] lambda_2 live = ' + lambda2Live.toFixed(10)
+    + '  target 3-sqrt5 = ' + lambda2Exact.toFixed(10)
+    + '  = 2*phi^-2 = ' + (2 / (PHI * PHI)).toFixed(10)
+    + (verified ? '  PROVEN' : '  MISMATCH'),
+    'color:' + (verified ? '#9ed3ff' : '#e86753'));
+
+  return { n, L, values, vectors, lambda2Exact, lambda2Live, verified, PHI };
+})();
+
+// =============================================================
+//  PHYSICS CONTENT — the 12 open questions and the 20 atoms.
+//  These are the actual algebraic and physical elements being
+//  visualized. Order matches the geometric pentagon enumeration.
+// =============================================================
+
+const PentagonContent = [
+  { title: "Why this algebra and not another?", technical: "Step 4 — variational selection of A_F in the Connes spectral action", body: "The Standard Model can be built from a very specific small algebra: ℂ ⊕ ℍ ⊕ M₃(ℂ). Why this one? We don't have a principle that picks it out. Every attempt to derive it from a single 'minimize this functional' principle has failed, including the one we built this dodecahedron to test.", footer: "This is the canonical open question of the program. The geometry of the whole sphere is organized around it." },
+  { title: "Three different inputs, identical output", technical: "The 16-dimensional plateau", body: "If you compute the space of allowed Dirac operators for three different algebras — ℂ⊕M₃(ℂ), ℍ⊕M₃(ℂ), and the full SM algebra — you get the exact same 16-dimensional subspace. Not just the same dimension; the same subspace. This means you cannot tell these three algebras apart by looking at their Dirac content alone.", footer: "Verified at machine precision (10⁻¹⁵). This was the cleanest computational finding." },
+  { title: "Why does it take two conditions?", technical: "Two-condition characterization rather than one functional", body: "We can characterize the Standard Model algebra as the smallest one satisfying (1) full Yukawa freedom AND (2) the right gauge factors with the right hypercharge action. But that's two conditions, not one. A real Step 4 closure would be a single principle that implies both. We don't have it.", footer: "" },
+  { title: "Why are quarks and leptons different?", technical: "The 8 → 16 leptoquark carveout mechanism", body: "Pati–Salam unification says leptons are essentially the 'fourth color' of quarks — at high energy, quark and lepton Yukawa couplings should be locked together. In the Standard Model they're not. The algebraic structure that breaks the lock is identified, but the physical mechanism that selects 'broken' over 'unified' is not.", footer: "Source of the well-known m_b / m_τ ≈ 3 prediction after RG running." },
+  { title: "Why exactly three generations?", technical: "The fermion generation count problem", body: "Electrons have heavier siblings: muons and taus. Up quarks have charm and top, down has strange and bottom. Three copies of everything, with vastly different masses. Why three and not two, four, or seven? No framework derives this — it's an empirical brute fact.", footer: "Stays open in every theory of fundamental physics, including this one." },
+  { title: "A suspiciously precise coincidence", technical: "The Koide residue", body: "Take the three charged lepton masses and form a specific combination: K = (mₑ + m_μ + m_τ) / (√mₑ + √m_μ + √m_τ)². The result is 2/3 to about one part in 100,000. Nobody knows whether this is a deep hint or a meaningless coincidence. The formula doesn't survive renormalization-group running cleanly, which makes it harder to take seriously, but the precision keeps physicists from dismissing it.", footer: "Currently undecidable. Coincidence or hint, we cannot tell." },
+  { title: "The worst prediction in physics", technical: "The cosmological constant problem", body: "Quantum field theory predicts a vacuum energy density. Observation gives a different one. They differ by 10¹²⁰ — a factor of one followed by 120 zeros. No serious framework, including the one this dodecahedron belongs to, addresses this discrepancy at all.", footer: "If physics has a single hole, this is the one." },
+  { title: "Why does any of this work at all?", technical: "The unreasonable effectiveness of mathematics (Wigner, 1960)", body: "Internal mathematical structures built without reference to physics — operator algebras, symmetry groups, geometric objects — keep turning out to describe physical reality with bizarre precision. Why? We have no idea. This isn't a question within the theory; it's a question about why the theory is possible at all.", footer: "The meta-defect. Has been open for 65 years." },
+  { title: "Why these specific signs?", technical: "KO-dimension 6 signature", body: "The Standard Model bimodule has three sign relations between its structural operators. These signs single out one possibility out of eight. Connes proved you need exactly this one to recover the SM. But 'you need it because it works' isn't a derivation. Why does nature pick this signature?", footer: "Stated, not derived. Like much of foundational physics." },
+  { title: "Does the spectral action actually do its job?", technical: "Spectral action critical point in A", body: "The spectral action is the candidate functional for closing Step 4. It's known to produce the right physics when you fix the algebra and vary the Dirac operator. The harder question — whether varying the algebra *itself* gives the SM as a critical point — has not been settled in the published literature.", footer: "Whoever closes this closes Step 4." },
+  { title: "Why these particular masses?", technical: "Yukawa hierarchy magnitudes", body: "The electron weighs 0.5 MeV. The top quark weighs 173,000 MeV. Why these specific numbers, with ratios spanning six orders of magnitude? The 16-dimensional Dirac space contains *room* for these parameters, but doesn't fix their values.", footer: "" },
+  { title: "Why do flavors mix the way they do?", technical: "Mixing matrices (CKM, PMNS)", body: "Quark flavors and neutrino flavors don't line up cleanly with the eigenstates of weak interaction. The 'rotation' matrices between them (CKM for quarks, PMNS for neutrinos) have specific empirical values that this framework does not derive. They're inputs, not outputs.", footer: "" },
+];
+
+const AtomNames = [
+  "Spectral action S", "Dirac operator D", "Heat kernel coefficient a₄",
+  "Algebra representation π", "Cosmological constant value Λ", "Grading operator γ",
+  "Yukawa coupling matrix", "Real structure J", "Unitary group U(A_F)",
+  "dim D(A_F) = 16", "SU(2)_L factor", "Order-one condition",
+  "Quark-lepton paired Yukawa", "Charged lepton mass triple", "λ vs λ* on right-handed up/down",
+  "M₃(ℂ) summand", "U(1)_Y factor", "Bimodule H_F",
+  "ℂ summand of A_F (the contested one)", "ℍ summand of A_F",
+];
+
+// Each pentagon carries the names of its 5 structural elements
+Geometry.pentagons.forEach((pent, i) => {
+  PentagonContent[i].atomNames = pent.map(v => AtomNames[v]);
+});
+
+// =============================================================
+//  SMALL HELPERS
+// =============================================================
+
+// Linear ramp from 1 → 0 as `value` crosses [start, end].
+// Used for the "magic disappearance" fade thresholds.
+const fadeFactor = (value, start, end) => {
+  if (value <= start) return 1.0;
+  if (value >= end) return 0.0;
+  return 1.0 - (value - start) / (end - start);
+};
+
+// Pre-compute an orthonormal basis (p, q) perpendicular to direction d.
+// Used so each tendril's wobble lives in a plane perpendicular to itself.
+const perpendicularBasis = (d) => {
+  let p = new THREE.Vector3(1, 0, 0);
+  if (Math.abs(d.dot(p)) > 0.9) p.set(0, 1, 0);
+  p.sub(d.clone().multiplyScalar(d.dot(p))).normalize();
+  const q = d.clone().cross(p);
+  return { p, q };
+};
+
+// Mean of N THREE.Vector3 positions, returned as a tuple [cx, cy, cz]
+const centroidOf = (positions) => {
+  let cx = 0, cy = 0, cz = 0;
+  for (const v of positions) { cx += v.x; cy += v.y; cz += v.z; }
+  const n = positions.length;
+  return [cx / n, cy / n, cz / n];
+};
+
+// =============================================================
+//  STRUCTURE — atoms, edges, pentagons. The body the Generator
+//  reaches into and tries to collapse.
+// =============================================================
+
+class Structure {
+  constructor(parentGroup) {
+    this.parentGroup = parentGroup;
+
+    // Cached base colors for the "magic disappearance" lerp
+    this.bgColor       = new THREE.Color(Palette.bg);
+    this.atomBaseColor = new THREE.Color(Palette.atom);
+    this.edgeBaseColor = new THREE.Color(Palette.edge);
+    this.pentBaseColor = new THREE.Color(Palette.pentagon);
+
+    this._buildAtoms();
+    this._buildEdges();
+    this._buildPentagons();
+  }
+
+  _buildAtoms() {
+    // All 20 atoms share one material — saves draw-state changes,
+    // and lets us re-color the whole set with one assignment.
+    this.atomMaterial = new THREE.MeshBasicMaterial({ color: Palette.atom });
+    const sphereGeom  = new THREE.SphereGeometry(0.055, 16, 12);
+
+    this.atomMeshes = Geometry.vertices.map((v, i) => {
+      const mesh = new THREE.Mesh(sphereGeom, this.atomMaterial);
+      mesh.position.set(v[0], v[1], v[2]);
+      mesh.userData = { type: 'atom', idx: i };
+      this.parentGroup.add(mesh);
+      return mesh;
+    });
+  }
+
+  _buildEdges() {
+    this.edgeMaterial = new THREE.LineBasicMaterial({
+      color: Palette.edge, transparent: true, opacity: 0.6,
+    });
+    const positions = new Float32Array(Geometry.edges.length * 6);
+    Geometry.edges.forEach(([a, b], i) => {
+      const va = Geometry.vertices[a], vb = Geometry.vertices[b];
+      positions[i*6+0] = va[0]; positions[i*6+1] = va[1]; positions[i*6+2] = va[2];
+      positions[i*6+3] = vb[0]; positions[i*6+4] = vb[1]; positions[i*6+5] = vb[2];
+    });
+    const geom = new THREE.BufferGeometry();
+    geom.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+    this.edgeLines = new THREE.LineSegments(geom, this.edgeMaterial);
+    this.parentGroup.add(this.edgeLines);
+  }
+
+  _buildPentagons() {
+    // Each pentagon is a fan of 5 triangles from its centroid to its
+    // vertices, slightly inset (0.985) to avoid z-fighting with edges.
+    // A second line geometry at 1.01 acts as a thin highlight outline.
+    const INSET = 0.985;
+    const OUTLINE_RADIUS = 1.01;
+
+    this.pentagonGroups = Geometry.pentagons.map((pent, idx) => {
+      const c = centroidOf(pent.map(i => ({
+        x: Geometry.vertices[i][0],
+        y: Geometry.vertices[i][1],
+        z: Geometry.vertices[i][2],
+      })));
+
+      // Triangle fan: [centroid, vertex_k, vertex_{k+1}] for k in 0..4
+      const faceVerts = new Float32Array(5 * 9);
+      for (let k = 0; k < 5; k++) {
+        const a = pent[k], b = pent[(k + 1) % 5];
+        const va = Geometry.vertices[a], vb = Geometry.vertices[b];
+        faceVerts[k*9+0] = c[0] * INSET; faceVerts[k*9+1] = c[1] * INSET; faceVerts[k*9+2] = c[2] * INSET;
+        faceVerts[k*9+3] = va[0] * INSET; faceVerts[k*9+4] = va[1] * INSET; faceVerts[k*9+5] = va[2] * INSET;
+        faceVerts[k*9+6] = vb[0] * INSET; faceVerts[k*9+7] = vb[1] * INSET; faceVerts[k*9+8] = vb[2] * INSET;
+      }
+      const faceGeom = new THREE.BufferGeometry();
+      faceGeom.setAttribute('position', new THREE.BufferAttribute(faceVerts, 3));
+      faceGeom.computeVertexNormals();
+      const faceMaterial = new THREE.MeshBasicMaterial({
+        color: Palette.pentagon,
+        transparent: true,
+        opacity: 0.0,            // invisible by default; lit on hover/select
+        side: THREE.DoubleSide,
+        depthWrite: false,
+      });
+      const faceMesh = new THREE.Mesh(faceGeom, faceMaterial);
+      faceMesh.userData = { type: 'pentagon', idx };
+      this.parentGroup.add(faceMesh);
+
+      // Outline: 5 edges along the perimeter
+      const outlineVerts = new Float32Array(5 * 6);
+      for (let k = 0; k < 5; k++) {
+        const a = pent[k], b = pent[(k + 1) % 5];
+        const va = Geometry.vertices[a], vb = Geometry.vertices[b];
+        outlineVerts[k*6+0] = va[0] * OUTLINE_RADIUS;
+        outlineVerts[k*6+1] = va[1] * OUTLINE_RADIUS;
+        outlineVerts[k*6+2] = va[2] * OUTLINE_RADIUS;
+        outlineVerts[k*6+3] = vb[0] * OUTLINE_RADIUS;
+        outlineVerts[k*6+4] = vb[1] * OUTLINE_RADIUS;
+        outlineVerts[k*6+5] = vb[2] * OUTLINE_RADIUS;
+      }
+      const outlineGeom = new THREE.BufferGeometry();
+      outlineGeom.setAttribute('position', new THREE.BufferAttribute(outlineVerts, 3));
+      const outlineMaterial = new THREE.LineBasicMaterial({
+        color: Palette.pentagon, transparent: true, opacity: 0.35,
+      });
+      const outlineMesh = new THREE.LineSegments(outlineGeom, outlineMaterial);
+      this.parentGroup.add(outlineMesh);
+
+      return {
+        idx,
+        faceMesh, outlineMesh,
+        faceMaterial, outlineMaterial,
+        normal: Geometry.pentagonNormals[idx],
+      };
+    });
+  }
+
+  // ----- Per-frame updates -----
+
+  // Apply a radial collapse `pull` ∈ [0, ~0.2): each atom moves
+  // toward the origin by that fraction of its radius. Edges and
+  // pentagons follow.
+  setRadialCollapse(pull) {
+    for (let i = 0; i < this.atomMeshes.length; i++) {
+      const v = Geometry.vertices[i];
+      this.atomMeshes[i].position.set(v[0] * (1 - pull), v[1] * (1 - pull), v[2] * (1 - pull));
+    }
+    this._rebuildEdgeGeometry();
+    this._rebuildPentagonGeometry();
+  }
+
+  // v8.3.1 -- vibrate the net in a Laplacian standing-wave MODE. Each atom is
+  // displaced radially by amp * modeVec[i] * sin(t*omega): a real normal mode of
+  // the graph (the net's honest sound). Lines follow via the rebuilds below.
+  setModalVibration(modeVec, amp, phase) {
+    for (let i = 0; i < this.atomMeshes.length; i++) {
+      const v = Geometry.vertices[i];
+      const s = 1 + amp * modeVec[i] * phase;   // radial breathing per eigen-component
+      this.atomMeshes[i].position.set(v[0] * s, v[1] * s, v[2] * s);
+    }
+    this._rebuildEdgeGeometry();
+    this._rebuildPentagonGeometry();
+  }
+
+  // Lerp atom / edge / pentagon colors toward the background.
+  // visibility = 1 keeps base colors; visibility = 0 fully blends to bg.
+  setVisibility(visibility) {
+    const blend = 1 - visibility;
+    this.atomMaterial.color.copy(this.atomBaseColor).lerp(this.bgColor, blend);
+    this.edgeMaterial.color.copy(this.edgeBaseColor).lerp(this.bgColor, blend);
+    for (const g of this.pentagonGroups) {
+      g.faceMaterial.color.copy(this.pentBaseColor).lerp(this.bgColor, blend);
+      g.outlineMaterial.color.copy(this.pentBaseColor).lerp(this.bgColor, blend);
+    }
+  }
+
+  // Restore atoms / edges / pentagons to their resting positions
+  // and base colors. Called when the Generator is toggled off.
+  resetToRest() {
+    for (let i = 0; i < this.atomMeshes.length; i++) {
+      const v = Geometry.vertices[i];
+      this.atomMeshes[i].position.set(v[0], v[1], v[2]);
+    }
+    this._rebuildEdgeGeometry();
+    this._rebuildPentagonGeometry();
+    this.atomMaterial.color.copy(this.atomBaseColor);
+    this.edgeMaterial.color.copy(this.edgeBaseColor);
+    for (const g of this.pentagonGroups) {
+      g.faceMaterial.color.copy(this.pentBaseColor);
+      g.outlineMaterial.color.copy(this.pentBaseColor);
+    }
+  }
+
+  // Hover/select highlighting — adjust pentagon opacities (color
+  // is independently controlled by setVisibility above).
+  applyHighlights(hoveredIdx, selectedIdx) {
+    for (let i = 0; i < this.pentagonGroups.length; i++) {
+      const g = this.pentagonGroups[i];
+      const isHover = i === hoveredIdx;
+      const isSel   = i === selectedIdx;
+      let opacity = 0.0, outlineOp = 0.35;
+      if (isSel)         { opacity = 0.35; outlineOp = 0.95; }
+      else if (isHover)  { opacity = 0.18; outlineOp = 0.75; }
+      g.faceMaterial.opacity = opacity;
+      g.outlineMaterial.opacity = outlineOp;
+    }
+  }
+
+  // ----- Internal: rebuild dependent geometry after atoms move -----
+
+  _rebuildEdgeGeometry() {
+    const positions = this.edgeLines.geometry.attributes.position.array;
+    for (let i = 0; i < Geometry.edges.length; i++) {
+      const [a, b] = Geometry.edges[i];
+      const pa = this.atomMeshes[a].position, pb = this.atomMeshes[b].position;
+      positions[i*6+0] = pa.x; positions[i*6+1] = pa.y; positions[i*6+2] = pa.z;
+      positions[i*6+3] = pb.x; positions[i*6+4] = pb.y; positions[i*6+5] = pb.z;
+    }
+    this.edgeLines.geometry.attributes.position.needsUpdate = true;
+  }
+
+  _rebuildPentagonGeometry() {
+    const INSET = 0.985, OUTLINE_RADIUS = 1.01;
+    for (let p = 0; p < this.pentagonGroups.length; p++) {
+      const g = this.pentagonGroups[p];
+      const pent = Geometry.pentagons[p];
+      const [cx, cy, cz] = centroidOf(pent.map(i => this.atomMeshes[i].position));
+
+      const facePositions = g.faceMesh.geometry.attributes.position.array;
+      const outlinePositions = g.outlineMesh.geometry.attributes.position.array;
+      for (let k = 0; k < 5; k++) {
+        const a = pent[k], b = pent[(k + 1) % 5];
+        const pa = this.atomMeshes[a].position, pb = this.atomMeshes[b].position;
+        facePositions[k*9+0] = cx * INSET; facePositions[k*9+1] = cy * INSET; facePositions[k*9+2] = cz * INSET;
+        facePositions[k*9+3] = pa.x * INSET; facePositions[k*9+4] = pa.y * INSET; facePositions[k*9+5] = pa.z * INSET;
+        facePositions[k*9+6] = pb.x * INSET; facePositions[k*9+7] = pb.y * INSET; facePositions[k*9+8] = pb.z * INSET;
+        outlinePositions[k*6+0] = pa.x * OUTLINE_RADIUS;
+        outlinePositions[k*6+1] = pa.y * OUTLINE_RADIUS;
+        outlinePositions[k*6+2] = pa.z * OUTLINE_RADIUS;
+        outlinePositions[k*6+3] = pb.x * OUTLINE_RADIUS;
+        outlinePositions[k*6+4] = pb.y * OUTLINE_RADIUS;
+        outlinePositions[k*6+5] = pb.z * OUTLINE_RADIUS;
+      }
+      g.faceMesh.geometry.attributes.position.needsUpdate = true;
+      g.outlineMesh.geometry.attributes.position.needsUpdate = true;
+    }
+  }
+}
+
+// =============================================================
+//  GENERATOR CORE — central pulsating presence: small bright
+//  inner sphere plus four concentric additive-blended halo shells.
+// =============================================================
+
+class GeneratorCore {
+  constructor(parentGroup) {
+    this.group = new THREE.Group();
+
+    // Inner core
+    this.coreMaterial = new THREE.MeshBasicMaterial({
+      color: Palette.generatorCore,
+      transparent: true, opacity: 0.95, depthWrite: false,
+    });
+    this.coreMesh = new THREE.Mesh(
+      new THREE.SphereGeometry(Generator.coreRadius, 24, 18),
+      this.coreMaterial,
+    );
+    this.group.add(this.coreMesh);
+
+    // Halo shells
+    this.haloShells = [];
+    for (let i = 0; i < Generator.haloShellCount; i++) {
+      const radius = Generator.haloShellBaseRadius + i * Generator.haloShellStep;
+      const baseOpacity = 0.18 - i * 0.035;
+      const material = new THREE.MeshBasicMaterial({
+        color: Palette.generatorHalo,
+        transparent: true,
+        opacity: baseOpacity,
+        blending: THREE.AdditiveBlending,
+        depthWrite: false,
+      });
+      const mesh = new THREE.Mesh(new THREE.SphereGeometry(radius, 24, 18), material);
+      mesh.userData = {
+        baseOpacity,
+        phaseOffset: i * 0.7,
+      };
+      this.group.add(mesh);
+      this.haloShells.push(mesh);
+    }
+
+    parentGroup.add(this.group);
+  }
+
+  // Drive the core+halo from breath/surge with a size multiplier
+  // and a global fade-in factor (used during the first seconds of pageload).
+  update({ breath, surge, breathPhase, intensity, sizeFactor, fadeIn }) {
+    const opacityScale = Math.min(1, sizeFactor);
+
+    this.coreMesh.scale.setScalar((1 + 0.18 * breath + 0.35 * surge) * sizeFactor);
+    this.coreMaterial.opacity = (0.7 + 0.25 * intensity) * fadeIn * opacityScale;
+
+    for (const shell of this.haloShells) {
+      const wave = Math.sin(breathPhase + shell.userData.phaseOffset);
+      shell.scale.setScalar((1 + 0.12 * wave + 0.28 * surge) * sizeFactor);
+      shell.material.opacity = shell.userData.baseOpacity *
+                               (0.55 + 0.6 * intensity) * fadeIn * opacityScale;
+    }
+  }
+
+  setVisible(v) { this.group.visible = v; }
+}
+
+// =============================================================
+//  TENDRILS — 20 lines from the Generator center to each atom,
+//  each in its own grow→hold→decay→pause lifecycle, with proper
+//  perpendicular wobble. Visually: the variational reach of the
+//  Generator into every structural element.
+// =============================================================
+
+class Tendrils {
+  constructor(parentGroup, atomMeshes) {
+    this.atomMeshes = atomMeshes;
+
+    const segCount = TendrilVisual.segments;
+    const innerColor = new THREE.Color(Palette.generatorCore);
+    const outerColor = new THREE.Color(Palette.generatorHalo);
+
+    this.tendrils = Geometry.vertices.map((vert, i) => {
+      // Direction and perpendicular basis for the wobble plane
+      const dir = new THREE.Vector3(vert[0], vert[1], vert[2]).normalize();
+      const { p, q } = perpendicularBasis(dir);
+
+      // Pre-compute base gradient (bright at center → soft at atom).
+      // Per-frame, we'll scale these by an alpha value computed from the
+      // lifecycle phase to get the additive-blended Tesseract trace look.
+      const baseColors = new Float32Array((segCount + 1) * 3);
+      for (let k = 0; k <= segCount; k++) {
+        const t = k / segCount;
+        const c = innerColor.clone().lerp(outerColor, t);
+        baseColors[k*3+0] = c.r; baseColors[k*3+1] = c.g; baseColors[k*3+2] = c.b;
+      }
+
+      const geom = new THREE.BufferGeometry();
+      geom.setAttribute('position', new THREE.BufferAttribute(new Float32Array((segCount+1) * 3), 3));
+      geom.setAttribute('color',    new THREE.BufferAttribute(new Float32Array((segCount+1) * 3), 3));
+      const material = new THREE.LineBasicMaterial({
+        vertexColors: true,
+        transparent: true,
+        opacity: 1.0,
+        blending: THREE.AdditiveBlending,
+        depthWrite: false,
+      });
+      const line = new THREE.Line(geom, material);
+      parentGroup.add(line);
+
+      return {
+        line, atomIdx: i, baseColors,
+        wobblePhase: (i / 20) * Math.PI * 2,         // staggers the wobble
+        cycleOffset: (i * 0.137) % 1,                // staggers the lifecycle
+        perpP: p,
+        perpQ: q,
+      };
+    });
+  }
+
+  // Determine which phase of grow/hold/decay/pause a tendril is in,
+  // given its position within the unit cycle and the current hold time.
+  _classifyLifecyclePhase(cyclePos, holdSec) {
+    const cycleSec = TendrilCycle.growSec + holdSec + TendrilCycle.decaySec + TendrilCycle.pauseSec;
+    const growEnd  = TendrilCycle.growSec / cycleSec;
+    const holdEnd  = (TendrilCycle.growSec + holdSec) / cycleSec;
+    const decayEnd = (TendrilCycle.growSec + holdSec + TendrilCycle.decaySec) / cycleSec;
+
+    if (cyclePos < growEnd)  return { kind: 'grow',  leadingEdge:  cyclePos / growEnd };
+    if (cyclePos < holdEnd)  return { kind: 'hold' };
+    if (cyclePos < decayEnd) return { kind: 'decay', trailingEdge: (cyclePos - holdEnd) / (decayEnd - holdEnd) };
+    return { kind: 'pause' };
+  }
+
+  // Per-vertex alpha for the Tesseract-style trace:
+  // during grow, alpha = exp(-(leadingEdge - u) * falloff) for u <= leadingEdge.
+  // during decay, symmetric on the far side.
+  // Plus a small bright "tip boost" right at the leading/trailing edge.
+  _segmentAlpha(u, phase) {
+    switch (phase.kind) {
+      case 'hold':  return 1.0;
+      case 'pause': return 0.0;
+      case 'grow': {
+        if (u > phase.leadingEdge) return 0.0;
+        let a = Math.exp(-(phase.leadingEdge - u) * TendrilVisual.trailFalloff);
+        if (Math.abs(u - phase.leadingEdge) < TendrilVisual.leadBoostWidth) {
+          a = Math.min(1.4, a + TendrilVisual.leadBoost);
+        }
+        return a;
+      }
+      case 'decay': {
+        if (u < phase.trailingEdge) return 0.0;
+        let a = Math.exp(-(u - phase.trailingEdge) * TendrilVisual.trailFalloff);
+        if (Math.abs(u - phase.trailingEdge) < TendrilVisual.leadBoostWidth) {
+          a = Math.min(1.4, a + TendrilVisual.leadBoost);
+        }
+        return a;
+      }
+    }
+  }
+
+  update({ t, holdSec, holdVisibility, fadeIn, focusedAtomIndices, lightMode, lightPulse }) {
+    const segCount = TendrilVisual.segments;
+    const cycleSec = TendrilCycle.growSec + holdSec + TendrilCycle.decaySec + TendrilCycle.pauseSec;
+    // In light mode the rays are calmer (half wobble) so the modal vibration reads
+    // clean; the base points still track the moving atoms so the rays follow.
+    const wobbleAmp = TendrilVisual.wobbleAmplitude * (lightMode ? 0.5 : 1) * fadeIn;
+
+    for (const tendril of this.tendrils) {
+      // ----- Position update with perpendicular wobble -----
+      const atomPos = this.atomMeshes[tendril.atomIdx].position;
+      const positions = tendril.line.geometry.attributes.position.array;
+
+      for (let k = 0; k <= segCount; k++) {
+        const u = k / segCount;
+        // Base point lerped along the tendril
+        const bx = atomPos.x * u, by = atomPos.y * u, bz = atomPos.z * u;
+        // Envelope peaks at u=0.5, vanishes at endpoints so center
+        // and atom-tip stay pinned exactly
+        const envelope = u * (1 - u) * 4;
+        const wA = Math.sin(t * 1.2 + tendril.wobblePhase + u * Math.PI * 3) * wobbleAmp * envelope;
+        const wB = Math.cos(t * 1.4 + tendril.wobblePhase + u * Math.PI * 3) * wobbleAmp * envelope;
+        positions[k*3+0] = bx + tendril.perpP.x * wA + tendril.perpQ.x * wB;
+        positions[k*3+1] = by + tendril.perpP.y * wA + tendril.perpQ.y * wB;
+        positions[k*3+2] = bz + tendril.perpP.z * wA + tendril.perpQ.z * wB;
+      }
+      tendril.line.geometry.attributes.position.needsUpdate = true;
+
+      // ----- Color update from lifecycle + focus modulation -----
+      const cyclePos = ((t / cycleSec) + tendril.cycleOffset) % 1;
+      const phase = this._classifyLifecyclePhase(cyclePos, holdSec);
+
+      const isFocused = focusedAtomIndices && focusedAtomIndices.has(tendril.atomIdx);
+      const isUnfocused = focusedAtomIndices && !focusedAtomIndices.has(tendril.atomIdx);
+
+      const colors = tendril.line.geometry.attributes.color.array;
+      const base = tendril.baseColors;
+
+      for (let k = 0; k <= segCount; k++) {
+        const u = k / segCount;
+        let alpha;
+
+        if (lightMode) {
+          // Light mode: every ray stays fully connected and follows its (moving)
+          // atom, breathing brightness with the fundamental tone. The rays no
+          // longer freeze -- they sing with the net.
+          alpha = lightPulse;
+        } else if (isFocused) {
+          // Selected pentagon's 5 atoms lock fully connected at high brightness,
+          // overriding the lifecycle phase. The visualization holds steady on
+          // the implicated atoms while the reader reads the question.
+          alpha = TendrilVisual.focusedBrightness;
+        } else {
+          alpha = this._segmentAlpha(u, phase);
+          if (isUnfocused) alpha *= TendrilVisual.unfocusedDimming;
+        }
+
+        // Global fades: hold-slider visibility and pageload fade-in
+        alpha *= (lightMode ? 1 : holdVisibility) * fadeIn;
+
+        colors[k*3+0] = base[k*3+0] * alpha;
+        colors[k*3+1] = base[k*3+1] * alpha;
+        colors[k*3+2] = base[k*3+2] * alpha;
+      }
+      tendril.line.geometry.attributes.color.needsUpdate = true;
+    }
+  }
+
+  setVisible(v) { for (const t of this.tendrils) t.line.visible = v; }
+}
+
+// =============================================================
+//  CONTROLS — slider DOM bindings, pillbutton toggles, reset
+// =============================================================
+
+class Controls {
+  constructor({ params, onParamsChange, onGeneratorToggle }) {
+    this.params = params;
+    this.onParamsChange = onParamsChange;
+    this.onGeneratorToggle = onGeneratorToggle;
+
+    // Slider elements paired with their value-display nodes
+    this.sliders = {
+      size:  { input: document.getElementById('sSize'),  display: document.getElementById('vSize') },
+      hold:  { input: document.getElementById('sHold'),  display: document.getElementById('vHold') },
+      comp:  { input: document.getElementById('sComp'),  display: document.getElementById('vComp') },
+      speed: { input: document.getElementById('sSpeed'), display: document.getElementById('vSpeed') },
+    };
+
+    for (const [key, { input }] of Object.entries(this.sliders)) {
+      input.addEventListener('input', (e) => {
+        this.params[key] = parseFloat(e.target.value);
+        this._refreshLabels();
+        this.onParamsChange?.();
+      });
+    }
+
+    document.getElementById('resetBtn').addEventListener('click', () => {
+      Object.assign(this.params, Defaults);
+      this._refreshLabels();
+      this.onParamsChange?.();
+    });
+
+    // Generator on/off pill button
+    this.genToggle = document.getElementById('genToggle');
+    this.genToggleLabel = this.genToggle.querySelector('.label');
+    this.genToggle.addEventListener('click', () => this.onGeneratorToggle?.());
+
+    // Tune button — opens the controls popover
+    this.tuneBtn = document.getElementById('tuneToggle');
+    this.controlsPanel = document.getElementById('controls');
+    this.controlsOpen = false;
+    this.tuneBtn.addEventListener('click', () => this.setControlsOpen(!this.controlsOpen));
+
+    this._refreshLabels();
+  }
+
+  _refreshLabels() {
+    this.sliders.size.display.textContent  = `${this.params.size.toFixed(2)}×`;
+    this.sliders.hold.display.textContent  = `${this.params.hold.toFixed(2)}s`;
+    this.sliders.comp.display.textContent  = `${(this.params.comp * 100).toFixed(1)}%`;
+    this.sliders.speed.display.textContent = `${this.params.speed.toFixed(2)}×`;
+    this.sliders.size.input.value  = this.params.size;
+    this.sliders.hold.input.value  = this.params.hold;
+    this.sliders.comp.input.value  = this.params.comp;
+    this.sliders.speed.input.value = this.params.speed;
+  }
+
+  setGeneratorState(on) {
+    this.genToggle.classList.toggle('on', on);
+    this.genToggleLabel.textContent = `Generator · ${on ? 'On' : 'Off'}`;
+  }
+
+  setControlsOpen(open) {
+    this.controlsOpen = open;
+    this.controlsPanel.classList.toggle('open', open);
+    this.tuneBtn.classList.toggle('open', open);
+  }
+}
+
+// =============================================================
+//  INTERACTION — drag/pinch/tap/hover/click, plus the panel that
+//  opens when a pentagon is selected.
+// =============================================================
+
+class Interaction {
+  constructor({ renderer, camera, pivot, pentagonGroups, onPentagonSelect, onPentagonDeselect, onAutoRotateBreak }) {
+    this.dom = renderer.domElement;
+    this.camera = camera;
+    this.pivot = pivot;
+    this.pentagonGroups = pentagonGroups;
+    this.onPentagonSelect = onPentagonSelect;
+    this.onPentagonDeselect = onPentagonDeselect;
+    this.onAutoRotateBreak = onAutoRotateBreak;
+
+    this.isTouchDevice = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0);
+    if (this.isTouchDevice) {
+      document.getElementById('hint').innerHTML =
+        '<span class="key">tap</span> a red pentagon &nbsp;·&nbsp; <span class="key">drag</span> to rotate &nbsp;·&nbsp; <span class="key">pinch</span> to zoom';
+    }
+
+    this.raycaster = new THREE.Raycaster();
+    this.mouseNDC = new THREE.Vector2();
+
+    this.hoveredPentagon = -1;
+    this.selectedPentagon = -1;
+
+    this.isDragging = false;
+    this.totalDragDistance = 0;
+    this.lastPointer = { x: 0, y: 0 };
+    this.rotationVelocity = { x: 0, y: 0 };
+
+    this.activePointers = new Map();
+    this.pinchStartDistance = 0;
+    this.pinchStartCameraZ = 0;
+
+    this._wireEvents();
+    this._wirePanel();
+  }
+
+  _wireEvents() {
+    const TAP_THRESHOLD = 6;
+    const dom = this.dom;
+
+    dom.addEventListener('pointerdown', (e) => {
+      dom.setPointerCapture(e.pointerId);
+      this.activePointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
+      if (this.activePointers.size === 1) {
+        this.isDragging = true;
+        this.onAutoRotateBreak?.();
+        this.totalDragDistance = 0;
+        this.lastPointer = { x: e.clientX, y: e.clientY };
+      } else if (this.activePointers.size === 2) {
+        this.isDragging = false;
+        this.pinchStartDistance = this._pointerDistance();
+        this.pinchStartCameraZ = this.camera.position.z;
+      }
+    });
+
+    dom.addEventListener('pointermove', (e) => {
+      if (this.activePointers.has(e.pointerId)) {
+        this.activePointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
+      }
+      if (this.activePointers.size === 2) {
+        const currentDist = this._pointerDistance();
+        if (this.pinchStartDistance > 0) {
+          const ratio = this.pinchStartDistance / currentDist;
+          this.camera.position.z = Math.max(3.0, Math.min(11, this.pinchStartCameraZ * ratio));
+        }
+        return;
+      }
+      if (this.isDragging && this.activePointers.size === 1) {
+        const dx = e.clientX - this.lastPointer.x;
+        const dy = e.clientY - this.lastPointer.y;
+        this.totalDragDistance += Math.abs(dx) + Math.abs(dy);
+        this.rotationVelocity.y = dx * 0.006;
+        this.rotationVelocity.x = dy * 0.006;
+        this.pivot.rotation.y += this.rotationVelocity.y;
+        this.pivot.rotation.x += this.rotationVelocity.x;
+        this.lastPointer = { x: e.clientX, y: e.clientY };
+      } else if (!this.isDragging && this.activePointers.size === 0) {
+        this._handleHover(e);
+      }
+    });
+
+    const endPointer = (e) => {
+      const wasDragging = this.isDragging;
+      const dragDist = this.totalDragDistance;
+      this.activePointers.delete(e.pointerId);
+      if (this.activePointers.size === 0) {
+        this.isDragging = false;
+        if (wasDragging && dragDist < TAP_THRESHOLD) {
+          const rect = dom.getBoundingClientRect();
+          this.mouseNDC.x = ((e.clientX - rect.left) / rect.width) * 2 - 1;
+          this.mouseNDC.y = -((e.clientY - rect.top) / rect.height) * 2 + 1;
+          const tapped = this._pickFrontPentagon();
+          if (tapped >= 0) this._selectPentagon(tapped);
+        }
+      } else if (this.activePointers.size === 1) {
+        const [remaining] = [...this.activePointers.values()];
+        this.lastPointer = { x: remaining.x, y: remaining.y };
+        this.pinchStartDistance = 0;
+      }
+    };
+    dom.addEventListener('pointerup', endPointer);
+    dom.addEventListener('pointercancel', endPointer);
+
+    dom.addEventListener('wheel', (e) => {
+      e.preventDefault();
+      this.camera.position.z = Math.max(3.0, Math.min(11, this.camera.position.z + e.deltaY * 0.003));
+    }, { passive: false });
+
+    dom.addEventListener('click', () => {
+      if (this.isTouchDevice) return;
+      if (this.hoveredPentagon >= 0) this._selectPentagon(this.hoveredPentagon);
+    });
+  }
+
+  _wirePanel() {
+    this.panel = document.getElementById('panel');
+    this.pTag    = document.getElementById('pTag');
+    this.pTitle  = document.getElementById('pTitle');
+    this.pTech   = document.getElementById('pTech');
+    this.pBody   = document.getElementById('pBody');
+    this.pAtoms  = document.getElementById('pAtoms');
+    this.pFooter = document.getElementById('pFooter');
+
+    document.getElementById('closeBtn').addEventListener('click', () => this._closePanel());
+    window.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') this._closePanel();
+    });
+  }
+
+  _showPanel(idx) {
+    const c = PentagonContent[idx];
+    this.pTag.textContent    = `Open question · pentagon ${idx + 1} of 12`;
+    this.pTitle.textContent  = c.title;
+    this.pTech.textContent   = c.technical;
+    this.pBody.textContent   = c.body;
+    this.pAtoms.innerHTML    = c.atomNames.map(n => `<li>${n}</li>`).join('');
+    this.pFooter.textContent = c.footer || '';
+    this.panel.classList.add('open');
+    this.panel.setAttribute('aria-hidden', 'false');
+  }
+
+  _closePanel() {
+    this.panel.classList.remove('open');
+    this.panel.setAttribute('aria-hidden', 'true');
+    this.selectedPentagon = -1;
+    this.onPentagonDeselect?.();
+  }
+
+  _selectPentagon(idx) {
+    this.selectedPentagon = idx;
+    this._showPanel(idx);
+    this.onPentagonSelect?.(idx);
+  }
+
+  _pickFrontPentagon() {
+    this.raycaster.setFromCamera(this.mouseNDC, this.camera);
+    const meshes = this.pentagonGroups.map(g => g.faceMesh);
+    const intersects = this.raycaster.intersectObjects(meshes);
+    const camWorld = new THREE.Vector3();
+    this.camera.getWorldPosition(camWorld);
+    for (const hit of intersects) {
+      const idx = hit.object.userData.idx;
+      const g = this.pentagonGroups[idx];
+      const n = new THREE.Vector3(...g.normal).applyEuler(this.pivot.rotation);
+      const toCamera = camWorld.clone().sub(hit.point).normalize();
+      if (n.dot(toCamera) > 0) return idx;
+    }
+    return -1;
+  }
+
+  _handleHover(e) {
+    if (this.isTouchDevice) return;
+    const rect = this.dom.getBoundingClientRect();
+    this.mouseNDC.x = ((e.clientX - rect.left) / rect.width) * 2 - 1;
+    this.mouseNDC.y = -((e.clientY - rect.top) / rect.height) * 2 + 1;
+    const frontIdx = this._pickFrontPentagon();
+    if (frontIdx !== this.hoveredPentagon) {
+      this.hoveredPentagon = frontIdx;
+      this.dom.style.cursor = frontIdx >= 0 ? 'pointer' : 'grab';
+    }
+  }
+
+  _pointerDistance() {
+    const pts = [...this.activePointers.values()];
+    if (pts.length < 2) return 0;
+    return Math.hypot(pts[0].x - pts[1].x, pts[0].y - pts[1].y);
+  }
+}
+
+// =============================================================
+//  APP — wires everything together and runs the animation loop
+// =============================================================
+
+class App {
+  constructor() {
+    this.params = { ...Defaults };
+    this.generatorEnabled = true;
+
+    this._setupScene();
+    this.structure = new Structure(this.pivot);
+    this.generator = new GeneratorCore(this.pivot);
+    this.tendrils  = new Tendrils(this.pivot, this.structure.atomMeshes);
+
+    this.controls = new Controls({
+      params: this.params,
+      onGeneratorToggle: () => this._toggleGenerator(),
+    });
+
+    this.interaction = new Interaction({
+      renderer: this.renderer,
+      camera: this.camera,
+      pivot: this.pivot,
+      pentagonGroups: this.structure.pentagonGroups,
+      onPentagonSelect: (idx) => { this.structure.applyHighlights(this.interaction.hoveredPentagon, idx); },
+      onPentagonDeselect: () => { this.structure.applyHighlights(this.interaction.hoveredPentagon, -1); },
+      onAutoRotateBreak: () => { this.autoRotate = false; },
+    });
+
+    this.autoRotate = true;
+    this.startTime = performance.now();
+
+    // v8.3.1 -- LIGHT MODE: freeze organic anim, vibrate the fundamental Laplacian
+    // mode (the net's true sound). Proven live in LightSpectrum (lambda_2=3-sqrt5).
+    this.lightMode = false;
+    this.lightModeIndex = 1;   // 1 = Fiedler / fundamental (index 0 is the flat kernel mode)
+    const lightBtn = document.getElementById('lightToggle');
+    if (lightBtn) lightBtn.addEventListener('click', () => this._toggleLightMode());
+
+    this._wireResize();
+    this._tick = this._tick.bind(this);
+    this._tick();
+  }
+
+  _toggleLightMode() {
+    this.lightMode = !this.lightMode;
+    const btn = document.getElementById('lightToggle');
+    const lbl = btn ? btn.querySelector('.label') : null;
+    if (this.lightMode) {
+      if (btn) btn.classList.add('on');
+      if (lbl) lbl.innerHTML = '&#9835; Light \u00b7 On';
+      this.tendrils.setVisible(true);   // rays always sing in light mode
+      const w = Math.sqrt(LightSpectrum.lambda2Live).toFixed(4);
+      const hint = document.getElementById('hint');
+      if (hint) hint.innerHTML = 'LIGHT MODE \u00b7 fundamental tone &#969; = &#8730;&#955;\u2082 = ' + w
+        + ' &nbsp;(&#955;\u2082 = 3\u2212&#8730;5 = 2/&#966;\u00b2, the net\u2019s true sound)';
+    } else {
+      if (btn) btn.classList.remove('on');
+      if (lbl) lbl.innerHTML = '&#9835; Light \u00b7 Off';
+      this.structure.resetToRest();
+    }
+  }
+
+  _setupScene() {
+    const stage = document.getElementById('stage');
+    this.scene = new THREE.Scene();
+    this.scene.background = new THREE.Color(Palette.bg);
+    this.scene.fog = new THREE.Fog(Palette.bg, 6, 14);
+
+    this.camera = new THREE.PerspectiveCamera(40, window.innerWidth / window.innerHeight, 0.1, 100);
+    this._fitCamera();
+
+    this.renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false });
+    this.renderer.setSize(window.innerWidth, window.innerHeight);
+    this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    stage.appendChild(this.renderer.domElement);
+
+    this.pivot = new THREE.Group();
+    this.scene.add(this.pivot);
+  }
+
+  _fitCamera() {
+    const isNarrow = window.innerWidth < 720;
+    const isPortrait = window.innerHeight > window.innerWidth;
+    let dist = 6.5;
+    if (isNarrow && isPortrait) dist = 4.8;
+    else if (isNarrow) dist = 5.5;
+    this.camera.position.z = dist;
+  }
+
+  _wireResize() {
+    const handleResize = () => {
+      this.camera.aspect = window.innerWidth / window.innerHeight;
+      this.camera.updateProjectionMatrix();
+      this.renderer.setSize(window.innerWidth, window.innerHeight);
+      this._fitCamera();
+    };
+    window.addEventListener('resize', handleResize);
+    window.addEventListener('orientationchange', () => setTimeout(handleResize, 100));
+  }
+
+  _toggleGenerator() {
+    this.generatorEnabled = !this.generatorEnabled;
+    this.controls.setGeneratorState(this.generatorEnabled);
+    this.generator.setVisible(this.generatorEnabled);
+    this.tendrils.setVisible(this.generatorEnabled);
+    if (!this.generatorEnabled) this.structure.resetToRest();
+  }
+
+  // =============================================================
+  //  THE LOOP
+  //
+  //  Each frame:
+  //   1. Compute breath + surge from the running time and the speed slider.
+  //      Together these drive the Generator's intensity.
+  //   2. Drive the Generator core+halo.
+  //   3. Pull atoms radially inward according to compression slider × breath envelope.
+  //   4. Rebuild dependent edge and pentagon geometry from the atom positions.
+  //   5. Lerp structure colors toward background to implement magic disappearance.
+  //   6. Update tendrils — position wobble plus per-vertex alpha from lifecycle phase.
+  //   7. Apply pentagon highlights based on hover and selection.
+  //   8. Rotate, render, schedule next frame.
+  // =============================================================
+
+  _tick() {
+    const now = performance.now();
+    const t = (now - this.startTime) / 1000;
+
+    if (this.lightMode) {
+      // The net vibrates in a real Laplacian normal mode: displacement
+      // amplitude per atom = eigenvector component; temporal frequency =
+      // sqrt(eigenvalue) (the honest tone). Organic Generator anim is frozen.
+      const mode = LightSpectrum.vectors[this.lightModeIndex];
+      const omega = Math.sqrt(LightSpectrum.values[this.lightModeIndex]);
+      const phase = Math.sin(t * omega * 2.2);   // 2.2 = gentle visual pacing, opt-in motion
+      this.structure.setModalVibration(mode, 0.55, phase);
+      // The light rays ADAPT: stay connected and follow the moving atoms, pulsing
+      // brightness with the same tone (|phase|, so it breathes at the antinodes).
+      const lightPulse = 0.55 + 0.45 * Math.abs(phase);
+      this.tendrils.update({
+        t, holdSec: this.params.hold, holdVisibility: 1, fadeIn: 1,
+        focusedAtomIndices: null, lightMode: true, lightPulse,
+      });
+      this.structure.applyHighlights(this.interaction.hoveredPentagon, this.interaction.selectedPentagon);
+      if (this.autoRotate) {
+        this.pivot.rotation.y += 0.0025;
+        this.pivot.rotation.x = Math.sin(now * 0.0002) * 0.15;
+      } else if (!this.interaction.isDragging) {
+        this.pivot.rotation.y += this.interaction.rotationVelocity.y;
+        this.pivot.rotation.x += this.interaction.rotationVelocity.x;
+        this.interaction.rotationVelocity.y *= 0.94;
+        this.interaction.rotationVelocity.x *= 0.94;
+      }
+      this.renderer.render(this.scene, this.camera);
+      requestAnimationFrame(this._tick);
+      return;
+    }
+
+    if (this.generatorEnabled) {
+      const fadeIn = Math.min(1, Math.max(0, (t - 1.5) / 2));
+      const readerDamping = this.interaction.selectedPentagon >= 0 ? Damping.readerOpenFactor : 1.0;
+
+      // Breath: continuous slow oscillation, scaled by the speed slider.
+      // Surge: rare sharp peaks that mark "the functional really attempts."
+      const breathPhase = t * Generator.breathOmega * this.params.speed;
+      const breath = Math.sin(breathPhase);
+      const surge = Math.pow(Math.max(0, Math.sin(t * Generator.surgeOmega)), Generator.surgeSharpness) * readerDamping;
+      const intensity = (0.5 + 0.3 * breath + 0.5 * surge) * fadeIn;
+
+      this.generator.update({ breath, surge, breathPhase, intensity, sizeFactor: this.params.size, fadeIn });
+
+      // Radial collapse: atoms pull inward by ~pullEnvelope × compression × damping
+      const pullEnvelope = 0.4 * Math.max(0, breath) + 0.6 * surge;
+      const radialCollapse = pullEnvelope * this.params.comp * readerDamping * fadeIn;
+      this.structure.setRadialCollapse(radialCollapse);
+
+      // Magic disappearance: structure colors lerp toward bg as compression maxes out
+      const structureVisibility = fadeFactor(this.params.comp, Magic.compFadeStart, Magic.compFadeEnd);
+      this.structure.setVisibility(structureVisibility);
+
+      // Tendrils: lifecycle + focus highlighting
+      const holdVisibility = fadeFactor(this.params.hold, Magic.holdFadeStart, Magic.holdFadeEnd);
+      const focusedAtomIndices = this.interaction.selectedPentagon >= 0
+        ? new Set(Geometry.pentagons[this.interaction.selectedPentagon])
+        : null;
+      this.tendrils.update({
+        t,
+        holdSec: this.params.hold,
+        holdVisibility,
+        fadeIn,
+        focusedAtomIndices,
+      });
+    }
+
+    // Pentagon hover/select highlights are color-independent from
+    // the structure visibility lerp, so we apply them every frame.
+    this.structure.applyHighlights(this.interaction.hoveredPentagon, this.interaction.selectedPentagon);
+
+    // Rotation: gentle auto-rotation until first user drag, then user-driven
+    // with friction. Behavior preserved from earlier versions.
+    if (this.autoRotate) {
+      this.pivot.rotation.y += 0.0025;
+      this.pivot.rotation.x = Math.sin(now * 0.0002) * 0.15;
+    } else if (!this.interaction.isDragging) {
+      this.pivot.rotation.y += this.interaction.rotationVelocity.y;
+      this.pivot.rotation.x += this.interaction.rotationVelocity.x;
+      this.interaction.rotationVelocity.y *= 0.94;
+      this.interaction.rotationVelocity.x *= 0.94;
+    }
+
+    this.renderer.render(this.scene, this.camera);
+    requestAnimationFrame(this._tick);
+  }
+}
+
+// =============================================================
+//  BOOT
+// =============================================================
+
+const app = new App();
+
+// Public receipt (Path XII -- the proof is inspectable in the console):
+// window.LIGHT.spectrum = the live Laplacian tones; .verify() re-checks lambda_2;
+// .atom0() = the first atom's live position (proves the net is vibrating).
+window.LIGHT = {
+  spectrum: Array.from(LightSpectrum.values),
+  lambda2Live: LightSpectrum.lambda2Live,
+  lambda2Exact: LightSpectrum.lambda2Exact,
+  verified: LightSpectrum.verified,
+  fiedler: Array.from(LightSpectrum.vectors[1]),
+  atom0: () => { const p = app.structure.atomMeshes[0].position; return { x:p.x, y:p.y, z:p.z }; },
+  lightModeOn: () => app.lightMode,
+  // ray-tip tracking proof: tendril 0's far endpoint vs its atom-0 position.
+  rayTipVsAtom0: () => {
+    const seg = TendrilVisual.segments;
+    const pos = app.tendrils.tendrils[0].line.geometry.attributes.position.array;
+    const tip = { x: pos[seg*3], y: pos[seg*3+1], z: pos[seg*3+2] };
+    const a = app.structure.atomMeshes[0].position;
+    const gap = Math.hypot(tip.x-a.x, tip.y-a.y, tip.z-a.z);
+    return { tip, atom:{x:a.x,y:a.y,z:a.z}, gap };
+  },
+};
+</script>
+</body>
+</html>
