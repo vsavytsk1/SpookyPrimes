@@ -1,0 +1,28 @@
+# =============================================================================
+#  LINE ENDINGS -- one stated convention
+# =============================================================================
+#  Git for Windows sets core.autocrlf=true in the SYSTEM config, which is why
+#  every `git add` warned. Declaring the convention here makes a byte
+#  comparison between two checkouts mean something.
+#
+#  Related, though not fixed by this file: ETHICS.md was once UTF-8 text
+#  re-encoded as latin-1 (4 middots, 9 em-dashes, a BOM, and a broken
+#  o-umlaut in "Mobius"). Line endings and character encoding are different
+#  problems; this file only settles the first. Write UTF-8, no BOM.
+# =============================================================================
+
+* text=auto eol=lf
+
+# --- research payload: binary, never converted, never text-diffed -----------
+*.h5      binary
+*.pdf     binary
+*.mp4     binary
+*.zip     binary
+*.tar.gz  binary
+*.png     binary
+*.jpg     binary
+
+# --- numerical data: ASCII tables, kept LF so diffs are real ----------------
+*.dat  text eol=lf
+
+*.svg  text eol=lf
